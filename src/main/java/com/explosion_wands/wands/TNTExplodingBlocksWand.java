@@ -9,9 +9,11 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -114,7 +116,6 @@ public class TNTExplodingBlocksWand {
                         );
                         //Simply: having a lot of dropped items in the world is bad for performance
                         fallingBlockEntity.dropItem = false;
-
                         //This does not make a perfect circle, but it should not be noticeable
                         if (increment <= randomExplosion && customTnt != null) {
                             customTnt.setPos(target.getX(),
@@ -147,16 +148,15 @@ public class TNTExplodingBlocksWand {
                             + ",   random explosion:   " + randomExplosion
                             + ",   random increment:   " + 1
             );
-
              */
+
+
             /*
             System.out.println(
                     ",   random entity number:    " + randomEntity
                             + ",   entity type: " + blockType
             );
              */
-
-
             //Plays a sound when a block is clicked
             /*
             level.playSound(null,

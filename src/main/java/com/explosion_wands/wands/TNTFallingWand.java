@@ -3,6 +3,7 @@ package com.explosion_wands.wands;
 import com.explosion_wands.customFunctions.tnt.CustomTnt;
 import com.explosion_wands.entity.ModEntities;
 import com.explosion_wands.sharedValues.ExplosionEntities;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -17,7 +18,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class TNTFallingWand {
-
     //Hits a block
     public static InteractionResult use(Item item, Level level, Player player, InteractionHand hand)  {
 
@@ -93,12 +93,14 @@ public class TNTFallingWand {
                         }
                     }
                 }
+                /*
                 System.out.println(
                         "Pre-calculated entities:   " + spawnedEntities
                                 + ",   entities:   " + increment
                                 + ",   random explosion:   " + randomExplosion
                                 + ",   random increment:   " + 1
                 );
+                 */
             //Plays a sound when a block is clicked
             /*
             level.playSound(null,

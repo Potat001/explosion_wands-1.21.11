@@ -64,7 +64,6 @@ public class FireballWand extends Item {
                 level, fireballAir, playerStartDir, playerEndDir, player.getBoundingBox()
                         .expandTowards(playerLookDir.scale(reach)).inflate(1.0),
                 entity -> entity instanceof LivingEntity && entity != player);
-        //Click on air/liquid
         //Fireball's initial spawn position
         if(blockHitResult.getType() != HitResult.Type.BLOCK) {
             Vec3 fireballInAirPosition = player.position().add(0, player.getEyeHeight() - 0.25, 0)
