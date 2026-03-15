@@ -15,6 +15,6 @@ public class FireballScatterWandItem extends Item {
 
     @Override
     public @NonNull InteractionResult use(@NonNull Level level, @NonNull Player player, @NonNull InteractionHand hand) {
-        return FireballScatterWand.use(this, level, player, hand);
+        return FireballScatterWand.use(level, player);
     }
 }

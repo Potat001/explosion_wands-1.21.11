@@ -23,7 +23,6 @@ public class TNTTornadoWand extends Item {
         super(properties);
     }
 
-    //Initializes the item
     public static InteractionResult use(Item item, Level level, Player player, InteractionHand hand) {
         BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
         if (hitResult.getType() != HitResult.Type.BLOCK && !level.isClientSide()) {
@@ -33,26 +32,40 @@ public class TNTTornadoWand extends Item {
         }
     }
 
-    public static PrimedTnt asPrimedTnt(Item item, Level level, Player player, InteractionHand hand) {
+    public static PrimedTnt asPrimedTnt(Level level, Player player) {
+        float volume = 0.4F;
+        float pitch = 1.0F;
         int min = 20;
         int max = 50;
         RandomSource random = RandomSource.create();
+        boolean tornado = true;
+        boolean gradualEntitySpawnAfterExplosion = false;
+        EntityType<?> entityToSpawn = EntityType.TNT;
+        boolean explodeOnContact = true;
+        float explosionPower = 0.0F;
+        boolean entitySpawnAfterExplosion = true;
         int randomFuse = min + random.nextInt(max - min);
+        boolean circle = true;
+        int amplitude = 20;
+        int entityAmount = 200;
+        boolean killEntitiesAfterLoop = false;
+        double yIncrement = 0.5;
         int velocity = 4;
         BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
         double dirX = player.getX();
         double dirY = player.getY();
         double dirZ = player.getZ();
-
+        double scale = 5.0;
+        double addedXDir = 0;
+        double addedYDir = player.getEyeHeight() - 0.25;
+        double addedZDir = 0;
         Vec3 playerLookDir = player.getLookAngle();
-        Vec3 playerStartDir = player.getEyePosition();
-        Vec3 playerEndDir = playerStartDir.add(playerLookDir.scale(1));
         playerLookDir.add(dirX, dirY, dirZ).normalize();
         CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level, EntitySpawnReason.TRIGGERED);
         if(customTnt != null) {
             if(blockHitResult.getType() != HitResult.Type.BLOCK) {
-                Vec3 customTntInAirPosition = player.position().add(0, player.getEyeHeight() - 0.25, 0)
-                        .add(playerLookDir.scale(5.0));
+                Vec3 customTntInAirPosition = player.position().add(addedXDir, addedYDir, addedZDir)
+                        .add(playerLookDir.scale(scale));
                 customTnt.moveOrInterpolateTo(customTntInAirPosition);
             } else {
                 //Does not work if it's at the very corner of a block, but it's more than good enough
@@ -61,25 +74,24 @@ public class TNTTornadoWand extends Item {
             }
             customTnt.setDeltaMovement(playerLookDir.scale(velocity));
             level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.TNT_PRIMED, SoundSource.PLAYERS, 0.4F, 1.0F);
-            customTnt.setTornado(true);
-            customTnt.setGradualEntitySpawnAfterExplosion(false);
-            customTnt.setEntityToSpawn(EntityType.TNT);
+                    SoundEvents.TNT_PRIMED, SoundSource.PLAYERS, volume, pitch);
+            customTnt.setTornado(tornado);
+            customTnt.setGradualEntitySpawnAfterExplosion(gradualEntitySpawnAfterExplosion);
+            customTnt.setEntityToSpawn(entityToSpawn);
             customTnt.setFuse(randomFuse);
-            customTnt.setExplodeOnContact(true);
-            customTnt.setExplosionPower(0F);
-            customTnt.setEntitySpawnAfterExplosion(true);
-            customTnt.setCircle(true);
-            customTnt.setAmplitude(20);
-            customTnt.setEntityAmount(200);
-            customTnt.setKillEntitiesAfterLoop(false);
-            customTnt.setYIncrement(0.5);
+            customTnt.setExplodeOnContact(explodeOnContact);
+            customTnt.setExplosionPower(explosionPower);
+            customTnt.setEntitySpawnAfterExplosion(entitySpawnAfterExplosion);
+            customTnt.setCircle(circle);
+            customTnt.setAmplitude(amplitude);
+            customTnt.setEntityAmount(entityAmount);
+            customTnt.setKillEntitiesAfterLoop(killEntitiesAfterLoop);
+            customTnt.setYIncrement(yIncrement);
             if(customTnt.touchingUnloadedChunk()) {
                 customTnt.discard();
             }
             return customTnt;
         }
-
         return null;
     }
 }

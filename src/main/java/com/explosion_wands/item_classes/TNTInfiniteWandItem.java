@@ -17,7 +17,7 @@ public class TNTInfiniteWandItem extends Item {
     @Override
     public @NonNull InteractionResult use(Level level, @NonNull Player player, @NonNull InteractionHand hand) {
         if (!level.isClientSide()) {
-            PrimedTnt customTnt = TNTInfiniteWand.asPrimedTnt(this, level, player, hand);
+            PrimedTnt customTnt = TNTInfiniteWand.asPrimedTnt(level, player);
             if (customTnt != null) {
                 level.addFreshEntity(customTnt);
             }

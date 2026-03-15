@@ -15,6 +15,6 @@ public class TNTFallingWandItem extends Item {
 
     @Override
     public @NonNull InteractionResult use(@NonNull Level level, @NonNull Player player, @NonNull InteractionHand hand) {
-        return TNTFallingWand.use(this, level, player, hand);
+        return TNTFallingWand.use(level, player);
     }
 }

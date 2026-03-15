@@ -2,19 +2,15 @@ package com.explosion_wands.wands;
 
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.entity.projectile.hurtingprojectile.LargeFireball;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -23,7 +19,6 @@ public class FireballWand extends Item {
         super(properties);
     }
 
-    //Initializes the item
     public static InteractionResult use(Item item, Level level, Player player, InteractionHand hand) {
         BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
         if (hitResult.getType() != HitResult.Type.BLOCK && !level.isClientSide()) {
@@ -33,41 +28,27 @@ public class FireballWand extends Item {
         }
     }
 
-    public static Projectile asFireballProjectile(Item item, Level level, Player player, InteractionHand hand) {
-        double min = 0.0;
-        double max = 10.0;
-        RandomSource random = RandomSource.create();
-        double randomDistr1 = min + random.nextDouble() * (max - min);
-        double randomDistr2 = min + random.nextDouble() * (max - min);
-        double randomDistr3 = min + random.nextDouble() * (max - min);
+    public static Projectile asFireballProjectile(Level level, Player player) {
+        float volume = 0.4F;
+        float pitch = 1.0F;
         BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
-        //Max distance we can click on an entity
-        int reach = 360;
         //Clicks on air/liquid
         int explosionPowerAir = 40;
         //fireball's velocity
         int velocity = 10;
+        double scale = 2.5;
+        double addedXDir = 0;
+        double addedYDir = player.getEyeHeight() - 0.25;
+        double addedZDir = 0;
         double dirX = player.getX();
         double dirY = player.getY();
         double dirZ = player.getZ();
         Vec3 playerLookDir = player.getLookAngle();
-        Vec3 playerStartDir = player.getEyePosition();
-        Vec3 playerEndDir = playerStartDir.add(playerLookDir.scale(reach));
         playerLookDir.add(dirX, dirY, dirZ).normalize();
-        //playerLookDir.add(0, 1000, 0).normalize();
-        //SmallFireball fireball = new SmallFireball(level, dirX, dirY, dirZ, dir.normalize());;
         LargeFireball fireballAir = new LargeFireball(level, player, playerLookDir, explosionPowerAir);
-        //Store the fireball's position
-        Vec3 fireballPos = fireballAir.position();
-        //Target entity
-        EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(
-                level, fireballAir, playerStartDir, playerEndDir, player.getBoundingBox()
-                        .expandTowards(playerLookDir.scale(reach)).inflate(1.0),
-                entity -> entity instanceof LivingEntity && entity != player);
-        //Fireball's initial spawn position
         if(blockHitResult.getType() != HitResult.Type.BLOCK) {
-            Vec3 fireballInAirPosition = player.position().add(0, player.getEyeHeight() - 0.25, 0)
-                    .add(playerLookDir.scale(2.5));
+            Vec3 fireballInAirPosition = player.position().add(addedXDir, addedYDir, addedZDir)
+                    .add(playerLookDir.scale(scale));
             //Sets the fireball's position
             fireballAir.moveOrInterpolateTo(fireballInAirPosition);
         } else {
@@ -79,9 +60,8 @@ public class FireballWand extends Item {
         //Set's the fireball's velocity
         fireballAir.setDeltaMovement(playerLookDir.scale(velocity));
         fireballAir.addTag("fireball");
-        //Plays sound when clicking on air/liquid
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 0.4F, 1.0F);
+                SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, volume, pitch);
         //Spawns the fireball
         if(fireballAir.touchingUnloadedChunk()) {
             fireballAir.discard();

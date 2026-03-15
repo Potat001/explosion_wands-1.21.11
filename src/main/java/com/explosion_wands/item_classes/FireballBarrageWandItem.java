@@ -15,6 +15,6 @@ public class FireballBarrageWandItem extends Item {
 
     @Override
     public @NonNull InteractionResult use(@NonNull Level level, @NonNull Player player, @NonNull InteractionHand hand) {
-        return FireballBarrageWand.use(this, level, player, hand);
+        return FireballBarrageWand.use(level, player);
     }
 }

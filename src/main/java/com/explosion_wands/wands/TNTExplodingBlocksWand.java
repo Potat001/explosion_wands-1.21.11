@@ -6,14 +6,10 @@ import com.explosion_wands.sharedValues.ExplosionEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -22,10 +18,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class TNTExplodingBlocksWand {
-
-    //Hits a block
-    public static InteractionResult use(Item item, Level level, Player player, InteractionHand hand)  {
-        if (level instanceof ServerLevel serverLevel && player != null && !level.isClientSide()) {
+    public static InteractionResult use(Level level, Player player)  {
+        if (level instanceof ServerLevel serverLevel && player != null) {
             int maxEntities = ExplosionEntities.maxEntities;
             int fuse = ExplosionEntities.fuse;
             int spawnedEntities = ExplosionEntities.spawnedEntities;
@@ -69,6 +63,7 @@ public class TNTExplodingBlocksWand {
             BlockState blockToSpawn = Blocks.DIAMOND_BLOCK.defaultBlockState();
             //Purely for debugging purposes
             String blockType = "";
+
             BlockPos target = blockHitResult.getBlockPos();
             //Failsafe in-case we spawn more entities than is intended
             if(spawnedEntities <= maxEntities) {
@@ -141,6 +136,7 @@ public class TNTExplodingBlocksWand {
                     }
                 }
             }
+            //Debugging
             /*
             System.out.println(
                     "Pre-calculated entities:   " + spawnedEntities
@@ -149,24 +145,11 @@ public class TNTExplodingBlocksWand {
                             + ",   random increment:   " + 1
             );
              */
-
-
             /*
             System.out.println(
                     ",   random entity number:    " + randomEntity
                             + ",   entity type: " + blockType
             );
-             */
-            //Plays a sound when a block is clicked
-            /*
-            level.playSound(null,
-                    player.getX(),
-                    player.getY(),
-                    player.getZ(),
-                    SoundEvents.TNT_PRIMED,
-                    SoundSource.PLAYERS,
-                    0.4F,
-                    1.0F);
              */
             return InteractionResult.SUCCESS;
         } else {

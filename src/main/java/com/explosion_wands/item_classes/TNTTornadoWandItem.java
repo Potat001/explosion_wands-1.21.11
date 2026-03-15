@@ -14,11 +14,10 @@ public class TNTTornadoWandItem extends Item {
         super(properties);
     }
 
-    //Click on air/liquid/entity
     @Override
     public @NonNull InteractionResult use(Level level, @NonNull Player player, @NonNull InteractionHand hand) {
         if (!level.isClientSide()) {
-            PrimedTnt customTnt = TNTTornadoWand.asPrimedTnt(this, level, player, hand);
+            PrimedTnt customTnt = TNTTornadoWand.asPrimedTnt(level, player);
             if (customTnt != null) {
                 level.addFreshEntity(customTnt);
             }

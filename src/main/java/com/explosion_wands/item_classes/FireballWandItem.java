@@ -17,7 +17,7 @@ public class FireballWandItem extends Item {
     @Override
     public @NonNull InteractionResult use(Level level, @NonNull Player player, @NonNull InteractionHand hand) {
         if (!level.isClientSide()) {
-            Projectile projectile = FireballWand.asFireballProjectile(this, level, player, hand);
+            Projectile projectile = FireballWand.asFireballProjectile(level, player);
             level.addFreshEntity(projectile);
         }
         return FireballWand.use(this, level, player, hand);

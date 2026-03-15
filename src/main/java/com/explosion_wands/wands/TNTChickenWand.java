@@ -22,7 +22,6 @@ public class TNTChickenWand extends Item {
         super(properties);
     }
 
-    //Initializes the item
     public static InteractionResult use(Item item, Level level, Player player, InteractionHand hand) {
         BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
         if (hitResult.getType() != HitResult.Type.BLOCK && !level.isClientSide()) {
@@ -32,20 +31,36 @@ public class TNTChickenWand extends Item {
         }
     }
 
-    public static PrimedTnt asPrimedTnt(Item item, Level level, Player player, InteractionHand hand) {
+    public static PrimedTnt asPrimedTnt(Level level, Player player) {
+        float volume = 0.4F;
+        float pitch = 1.0F;
         int velocity = 4;
         BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
         double dirX = player.getX();
         double dirY = player.getY();
         double dirZ = player.getZ();
+        double scale = 3.0;
+        double addedXDir = 0;
+        double addedYDir = player.getEyeHeight() - 0.25;
+        double addedZDir = 0;
+        boolean discardFirstUse = true;
+        boolean explodeOnContact = true;
+        float explosionPower = 0F;
+        boolean entitySpawnAfterExplosion = true;
+        boolean circle = true;
+        double amplitude = 10.0;
+        double yChange = 10.0;
+        EntityType<?> entityToSpawn = EntityType.CHICKEN;
+        int entityAmount = 60;
+        boolean gradualSpawnAfterExplosion = false;
 
         Vec3 playerLookDir = player.getLookAngle();
         playerLookDir.add(dirX, dirY, dirZ).normalize();
         CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level, EntitySpawnReason.TRIGGERED);
         if(customTnt != null) {
             if(blockHitResult.getType() != HitResult.Type.BLOCK) {
-                Vec3 customTntInAirPosition = player.position().add(0, player.getEyeHeight() - 0.25, 0)
-                        .add(playerLookDir.scale(3.0));
+                Vec3 customTntInAirPosition = player.position().add(addedXDir, addedYDir, addedZDir)
+                        .add(playerLookDir.scale(scale));
                 customTnt.moveOrInterpolateTo(customTntInAirPosition);
             } else {
                 //Does not work if it's at the very corner of a block, but it's more than good enough
@@ -54,17 +69,17 @@ public class TNTChickenWand extends Item {
             }
                 customTnt.setDeltaMovement(playerLookDir.scale(velocity));
                 level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                        SoundEvents.TNT_PRIMED, SoundSource.PLAYERS, 0.4F, 1.0F);
-                customTnt.setDiscardOnFirstUse(true);
-                customTnt.setExplodeOnContact(true);
-                customTnt.setExplosionPower(0.0F);
-                customTnt.setEntitySpawnAfterExplosion(true);
-                customTnt.setCircle(true);
-                customTnt.setAmplitude(10);
-                customTnt.setYChange(10);
-                customTnt.setEntityToSpawn(EntityType.CHICKEN);
-                customTnt.setEntityAmount(60);
-                customTnt.setGradualEntitySpawnAfterExplosion(false);
+                        SoundEvents.TNT_PRIMED, SoundSource.PLAYERS, volume, pitch);
+                customTnt.setDiscardOnFirstUse(discardFirstUse);
+                customTnt.setExplodeOnContact(explodeOnContact);
+                customTnt.setExplosionPower(explosionPower);
+                customTnt.setEntitySpawnAfterExplosion(entitySpawnAfterExplosion);
+                customTnt.setCircle(circle);
+                customTnt.setAmplitude(amplitude);
+                customTnt.setYChange(yChange);
+                customTnt.setEntityToSpawn(entityToSpawn);
+                customTnt.setEntityAmount(entityAmount);
+                customTnt.setGradualEntitySpawnAfterExplosion(gradualSpawnAfterExplosion);
                 if(customTnt.touchingUnloadedChunk()) {
                     customTnt.discard();
                 }

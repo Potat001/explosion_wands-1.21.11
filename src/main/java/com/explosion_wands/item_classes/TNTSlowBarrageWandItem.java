@@ -12,9 +12,8 @@ public class TNTSlowBarrageWandItem extends Item {
         super(properties);
     }
 
-    //Click on block
     @Override
     public @NonNull InteractionResult use(@NonNull Level level, @NonNull Player player, @NonNull InteractionHand hand) {
-        return com.explosion_wands.wands.TNTSlowBarrageWand.use(this, level, player, hand);
+        return com.explosion_wands.wands.TNTSlowBarrageWand.use(level, player);
     }
 }

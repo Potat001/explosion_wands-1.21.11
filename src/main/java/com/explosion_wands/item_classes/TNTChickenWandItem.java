@@ -17,7 +17,7 @@ public class TNTChickenWandItem extends Item {
     @Override
     public @NonNull InteractionResult use(Level level, @NonNull Player player, @NonNull InteractionHand hand) {
         if (!level.isClientSide()) {
-            PrimedTnt customTnt = TNTChickenWand.asPrimedTnt(this, level, player, hand);
+            PrimedTnt customTnt = TNTChickenWand.asPrimedTnt(level, player);
             if (customTnt != null) {
                 level.addFreshEntity(customTnt);
             }

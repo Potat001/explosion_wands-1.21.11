@@ -6,13 +6,10 @@ import com.explosion_wands.sharedValues.ExplosionEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.hurtingprojectile.LargeFireball;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -20,9 +17,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class FireballScatterWand {
 
-    //Hits a block
-    public static InteractionResult use(Item item, Level level, Player player, InteractionHand hand)  {
-
+    public static InteractionResult use(Level level, Player player)  {
         if (level instanceof ServerLevel serverLevel && player != null && !level.isClientSide()) {
             int maxEntities = ExplosionEntities.maxEntities;
             int fuse = ExplosionEntities.fuse;
@@ -33,7 +28,9 @@ public class FireballScatterWand {
             double randomPos = (maxRandomPos + random.nextDouble() * (maxRandomPos - minRandomPos));
             int fireballExplosionPower = 8;
             int increment = ExplosionEntities.increment;
+            float randomExplosion = 0;
             double lessThanTheta = ExplosionEntities.lessThanTheta;
+            lessThanTheta = lessThanTheta / 2;
             double lessThanPhi = ExplosionEntities.lessThanPhi;
             double incrementTheta;
             incrementTheta = 0.5;
@@ -45,7 +42,8 @@ public class FireballScatterWand {
             double r;
             r = 8;
             int spawnHeight;
-            spawnHeight = 20;
+            spawnHeight = 17;
+            float explosionPower = 0F;
             int reach = ExplosionEntities.reach;
             Vec3 playerEyeStart = player.getEyePosition();
             Vec3 playerLookAngle = player.getLookAngle();
@@ -60,20 +58,19 @@ public class FireballScatterWand {
             BlockPos target = blockHitResult.getBlockPos();
             //Failsafe in-case we spawn more entities than is intended
             if(spawnedEntities <= maxEntities) {
-                for (double theta = ExplosionEntities.theta; theta <= lessThanTheta / 2; theta += incrementTheta) {
+                for (double theta = ExplosionEntities.theta; theta <= lessThanTheta; theta += incrementTheta) {
                     for (double phi = ExplosionEntities.phi; phi <= lessThanPhi; phi += incrementPhi) {
                         LargeFireball fireball = new LargeFireball(level, player, playerLookAngle, fireballExplosionPower);
                         CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level, EntitySpawnReason.TRIGGERED);
                         //This does not make a perfect circle, but it should not be noticeable
-                        if (increment <= 0 && customTnt != null) {
+                        if (increment <= randomExplosion && customTnt != null) {
                             customTnt.setPos(target.getX(),
-                                    target.getY() + spawnHeight - 3,
+                                    target.getY() + spawnHeight,
                                     target.getZ()
                             );
                             serverLevel.addFreshEntity(customTnt);
                             customTnt.setFuse(fuse);
-                            customTnt.setExplosionPower(0F);
-                            //System.out.println("TNTs spawned: " + (increment + 1));
+                            customTnt.setExplosionPower(explosionPower);
                         }
                         //Creates fireball every iteration
                         //X dir: cos, Z dir: sin, makes a circle
@@ -97,31 +94,6 @@ public class FireballScatterWand {
                     }
                 }
             }
-            /*
-            System.out.println(
-                      "Pre-calculated entities:   " + spawnedEntities
-                    + ",   entities:   " + increment
-                    + ",   random explosion:   " + randomExplosion
-                    + ",   random increment:   " + randomIncrement
-            );
-             */
-            /*
-            System.out.println(
-                    ",   random entity number:    " + randomEntity
-                    + ",   entity type: " + entityType
-            );
-             */
-            //Plays a sound when a block is clicked
-            /*
-            level.playSound(null,
-                    target.getX(),
-                    target.getY() + spawnHeight,
-                    target.getZ(),
-                    SoundEvents.TNT_PRIMED,
-                    SoundSource.PLAYERS,
-                    0.4F,
-                    1.0F);
-             */
             return InteractionResult.SUCCESS;
         } else {
             return InteractionResult.CONSUME;

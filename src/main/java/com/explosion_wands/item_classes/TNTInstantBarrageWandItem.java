@@ -15,6 +15,6 @@ public class TNTInstantBarrageWandItem extends Item {
 
     @Override
     public @NonNull InteractionResult use(@NonNull Level level, @NonNull Player player, @NonNull InteractionHand hand) {
-        return TNTInstantBarrageWand.use(this, level, player, hand);
+        return TNTInstantBarrageWand.use(level, player);
     }
 }

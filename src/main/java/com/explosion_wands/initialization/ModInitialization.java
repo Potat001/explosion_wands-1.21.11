@@ -6,89 +6,93 @@ import com.explosion_wands.tick.TickQueueManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
 
 public class ModInitialization implements ModInitializer {
     public static final String MOD_ID = "explosion_wands";
-
+    public static ResourceKey<CreativeModeTab> creativeModeTabs1 = CreativeModeTabs.TOOLS_AND_UTILITIES;
+    public static ResourceKey<CreativeModeTab> creativeModeTabs2 = CreativeModeTabs.COMBAT;
     public void onInitialize() {
 
         //FIREBALL BARRAGE WAND
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs1)
                 .register(entries -> entries.accept(ModItems.FIREBALL_BARRAGE_WAND));
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs2)
                 .register(entries -> entries.accept(ModItems.FIREBALL_BARRAGE_WAND));
 
         //FIREBALL HITSCAN WAND
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs1)
                 .register(entries -> entries.accept(ModItems.FIREBALL_HITSCAN_WAND));
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs2)
                 .register(entries -> entries.accept(ModItems.FIREBALL_HITSCAN_WAND));
 
         //FIREBALL SCATTER WAND
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs1)
                 .register(entries -> entries.accept(ModItems.FIREBALL_SCATTER_WAND));
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs2)
                 .register(entries -> entries.accept(ModItems.FIREBALL_SCATTER_WAND));
 
         //FIREBALL SHOTGUN WAND
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs1)
                 .register(entries -> entries.accept(ModItems.FIREBALL_SHOTGUN_WAND));
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs2)
                 .register(entries -> entries.accept(ModItems.FIREBALL_SHOTGUN_WAND));
 
         //FIREBALL WAND
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs1)
                 .register(entries -> entries.accept(ModItems.FIREBALL_WAND));
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs2)
                 .register(entries -> entries.accept(ModItems.FIREBALL_WAND));
 
         //TNT CHICKEN WAND
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs1)
                 .register(entries -> entries.accept(ModItems.TNT_CHICKEN_WAND));
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs2)
                 .register(entries -> entries.accept(ModItems.TNT_CHICKEN_WAND));
 
         //TNT EXPLODING BLOCKS WAND
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs1)
                 .register(entries -> entries.accept(ModItems.TNT_EXPLODING_BLOCKS_WAND));
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs2)
                 .register(entries -> entries.accept(ModItems.TNT_EXPLODING_BLOCKS_WAND));
 
         //TNT EXPLODING ENTITIES WAND
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs1)
                 .register(entries -> entries.accept(ModItems.TNT_EXPLODING_ENTITIES_WAND));
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs2)
                 .register(entries -> entries.accept(ModItems.TNT_EXPLODING_ENTITIES_WAND));
 
         //TNT FALLING WAND
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs1)
                 .register(entries -> entries.accept(ModItems.TNT_FALLING_WAND));
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs2)
                 .register(entries -> entries.accept(ModItems.TNT_FALLING_WAND));
 
         //TNT INFINITE WAND
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs1)
                 .register(entries -> entries.accept(ModItems.TNT_INFINITE_WAND));
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs2)
                 .register(entries -> entries.accept(ModItems.TNT_INFINITE_WAND));
 
         //TNT INSTANT BARRAGE WAND
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs1)
                 .register(entries -> entries.accept(ModItems.TNT_INSTANT_BARRAGE_WAND));
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs2)
                 .register(entries -> entries.accept(ModItems.TNT_INSTANT_BARRAGE_WAND));
 
         //TNT SLOW BARRAGE WAND
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs1)
                 .register(entries -> entries.accept(ModItems.TNT_SLOW_BARRAGE_WAND));
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs2)
                 .register(entries -> entries.accept(ModItems.TNT_SLOW_BARRAGE_WAND));
 
         //TNT TORNADO WAND
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs1)
                 .register(entries -> entries.accept(ModItems.TNT_TORNADO_WAND));
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.COMBAT)
+        ItemGroupEvents.modifyEntriesEvent(creativeModeTabs2)
                 .register(entries -> entries.accept(ModItems.TNT_TORNADO_WAND));
 
 

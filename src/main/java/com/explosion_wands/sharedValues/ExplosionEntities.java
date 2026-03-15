@@ -44,5 +44,4 @@ public class ExplosionEntities {
 
     public static int minRandomEntity = 1;
     public static int maxRandomEntity = spawnedEntities;
-
 }

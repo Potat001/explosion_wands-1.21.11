@@ -6,13 +6,11 @@ import com.explosion_wands.sharedValues.ExplosionEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -20,9 +18,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class TNTExplodingEntitiesWand {
 
-    //Hits a block
-    public static InteractionResult use(Item item, Level level, Player player, InteractionHand hand) {
-
+    public static InteractionResult use(Level level, Player player) {
         if (level instanceof ServerLevel serverLevel && player != null && !level.isClientSide()) {
             int maxEntities = ExplosionEntities.maxEntities;
             int fuse = ExplosionEntities.fuse;
@@ -40,7 +36,6 @@ public class TNTExplodingEntitiesWand {
             int randomIncrement = minIncrement + random.nextInt(maxIncrement - minIncrement);
             int randomEntity = minRandomEntities + random.nextInt(maxRandomEntities - minRandomEntities);
             double randomPos = (maxRandomPos + random.nextDouble() * (maxRandomPos - minRandomPos));
-
             int increment = ExplosionEntities.increment;
             double lessThanTheta = ExplosionEntities.lessThanTheta;
             double lessThanPhi = ExplosionEntities.lessThanPhi;
@@ -65,6 +60,7 @@ public class TNTExplodingEntitiesWand {
             EntityType<?> entityToSpawn = EntityType.CHICKEN;
             //For debugging purposes
             String entityType = "";
+
             BlockPos target = blockHitResult.getBlockPos();
             //Failsafe in-case we spawn more entities than is intended
             if (spawnedEntities <= maxEntities) {
@@ -131,6 +127,7 @@ public class TNTExplodingEntitiesWand {
                         }
                     }
                 }
+                //Debugging
                 /*
                 System.out.println(
                         "Pre-calculated entities:   " + spawnedEntities
@@ -146,16 +143,6 @@ public class TNTExplodingEntitiesWand {
                 );
                  */
                 //Plays a sound when a block is clicked
-            /*
-            level.playSound(null,
-                    player.getX(),
-                    player.getY(),
-                    player.getZ(),
-                    SoundEvents.TNT_PRIMED,
-                    SoundSource.PLAYERS,
-                    0.4F,
-                    1.0F);
-             */
 
             }
             return InteractionResult.SUCCESS;

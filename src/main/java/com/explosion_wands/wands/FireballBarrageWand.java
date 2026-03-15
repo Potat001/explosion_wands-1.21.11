@@ -1,30 +1,22 @@
 package com.explosion_wands.wands;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.hurtingprojectile.LargeFireball;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 public class FireballBarrageWand {
     private static final List<Runnable> QUEUE = new ArrayList<>();
     private static int tickCounter = 0;
-    private static int taskCount = 0;
-    private static final Queue<Runnable> nextTickQueue = new ArrayDeque<>();
 
     public static void add(Runnable task) {
         QUEUE.add(task);
@@ -39,27 +31,28 @@ public class FireballBarrageWand {
         if (tickCounter >= 1) {
             //Resets the tick counter
             tickCounter = 0;
-            QUEUE.remove(0).run();
+            QUEUE.removeFirst().run();
         }
     }
-
-    //Hits a block
-    public static InteractionResult use(Item item, Level level, Player player, InteractionHand hand) {
+    public static InteractionResult use(Level level, Player player) {
+        float volume = 0.4F;
+        float pitch = 1.0F;
         int reach = 360;
         int spawnHeight = 50;
         double amplitude = 15;
         int fireballAmount = 40;
+        int newFireballAmount = fireballAmount / 2;
         int explosionPower = 10;
         //Direction the fireballs will head towards, and the speed of the fireballs
         double xDir = 0;
         double yDir = -2;
         double zDir = 0;
-
+        int degrees = 90;
         if(player != null && level instanceof ServerLevel serverLevel) {
             Vec3 dir = new Vec3(xDir, yDir, zDir);
-            double angle = Math.toRadians(player.getYRot() + 90);
+            double angle = Math.toRadians(player.getYRot() + degrees);
             //Makes the fireballs equally spread out
-            double angleStep = Math.PI / ((double) fireballAmount / 2);
+            double angleStep = Math.PI / ((double) newFireballAmount);
             Vec3 playerEyeStart = player.getEyePosition();
             //Also how far away the fireballs spawn from the player
             Vec3 playerLookAngle = player.getLookAngle();
@@ -97,8 +90,8 @@ public class FireballBarrageWand {
                     blockHitResult.getBlockPos().getZ(),
                     SoundEvents.FIRECHARGE_USE,
                     SoundSource.PLAYERS,
-                    0.4F,
-                    1.0F);
+                    volume,
+                    pitch);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.FAIL;

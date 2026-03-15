@@ -10,8 +10,8 @@ it's going to be quite performance heavy, as is the nature of a mod like this.
 From testing, however, it's a lot less performance heavy than I would expect,
 even while testing it my own laptop and one of my relative's Macs. But still...
 spamming it heavily will make the server crawl to a halt and make your fps
-plummit until it's done. Using the mod extensively on one world seems to also
-degrade the performance over time, which is not really something I can fix.
+plummet until it's done. Using the mod extensively on one world seems to also
+degrade the performance over time, which doesn't seem to be anything I can really fix.
 
 The mod does, however, work as expected on singleplayer and multiplayer servers,
 so... have fun with it your own way ^^

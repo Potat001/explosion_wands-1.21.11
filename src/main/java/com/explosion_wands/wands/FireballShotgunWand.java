@@ -20,7 +20,6 @@ public class FireballShotgunWand extends Item {
         super(properties);
     }
 
-    //Initializes the item
     public static InteractionResult use(Item item, Level level, Player player, InteractionHand hand) {
         BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
         if (hitResult.getType() != HitResult.Type.BLOCK && !level.isClientSide()) {
@@ -30,10 +29,13 @@ public class FireballShotgunWand extends Item {
         }
     }
 
-    public static Projectile asFireballProjectile(Item item, Level level, Player player, InteractionHand hand) {
+    public static Projectile asFireballProjectile(Level level, Player player) {
         if(level instanceof ServerLevel server) {
         BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
         //Max distance we can click on an entity
+
+        float volume = 0.8F;
+        float pitch = 1.0F;
         int reach = 360;
         double incremented = 2;
         double changePos = 0;
@@ -45,51 +47,43 @@ public class FireballShotgunWand extends Item {
         double dirX = player.getX();
         double dirY = player.getY();
         double dirZ = player.getZ();
+        int degrees = 90;
+        double layerStartDirForwardScale = 2.5;
+        double directlyUpScale = -0.25;
+        double playerStartDirRightBlockHitX = 0;
+            double playerStartDirRightBlockHitY = 0.25;
+            double playerStartDirRightBlockHitZ = 0;
         //Looking directly up
-            double directlyUpDir = Math.toRadians(player.getXRot() + 90);
+            double directlyUpDir = Math.toRadians(player.getXRot() + degrees);
             //Looking directly down
-            double directlyDownDir = Math.toRadians(player.getXRot() - 90);
-            //For debugging purposes
-            /*
-            if(directlyUpDir == 0) {
-                System.out.println("Directly up!");
-            }
-            if(directlyDownDir == 0) {
-                System.out.println("Directly down!");
-            }
-             */
+            double directlyDownDir = Math.toRadians(player.getXRot() - degrees);
         Vec3 playerStartDirForward = player.getLookAngle().normalize();
         Vec3 directlyUp = new Vec3(0,1,0);
         if(directlyUpDir == 0 || directlyDownDir == 0) {
             directlyUp = new Vec3(0,0,1);
         }
         Vec3 playerStartDir = player.getEyePosition();
-        Vec3 playerEndDir = playerStartDir.add(playerStartDirForward.scale(reach));
         playerStartDirForward.add(dirX, dirY, dirZ).normalize();
-            final double playerLookAngle = Math.toRadians(player.getXRot());
             //Sets the x and z directions to these numbers as a workaround for when we look directly up or down, which makes
             //the vectors be (0,0,0) no matter what. This should be indistinguishable compared to if they are 0
             Vec3 playerStartDirRight = playerStartDirForward.cross(directlyUp).normalize();
-        Vec3 playerStartDirLeft = playerStartDirRight.cross(playerStartDirForward).normalize();
-        float yaw = player.getYRot();
-        double rad = Math.toRadians(yaw);
-        //playerLookDir.add(0, 1000, 0).normalize();
         for(int i = 0; i < fireballAmount; i++) {
+            double playerStartDirRightScale = incremented * (fireballAmount / 2) - (changePos + incremented / 2);
             LargeFireball fireballAir = new LargeFireball(level, player, playerStartDirForward, explosionPowerAir);
             //Fireball's initial spawn position
             if(blockHitResult.getType() != HitResult.Type.BLOCK) {
-                    Vec3 fireballInAirPosition = playerStartDir.add(playerStartDirForward.scale(2.5)) //in front
+                    Vec3 fireballInAirPosition = playerStartDir.add(playerStartDirForward.scale(layerStartDirForwardScale)) //in front
                             //Ensures that the fireballs are evenly distributed in front of the player
-                            .add(playerStartDirRight.scale((incremented * (fireballAmount / 2)) - (changePos + incremented / 2))) //left/right
-                            .add(directlyUp.scale(-0.25)); //up/down
+                            .add(playerStartDirRight.scale((playerStartDirRightScale))) //left/right
+                            .add(directlyUp.scale(directlyUpScale)); //up/down
                     //Sets the fireball's position
                     fireballAir.moveOrInterpolateTo(fireballInAirPosition);
             }
             if(blockHitResult.getType() == HitResult.Type.BLOCK) {
                     Vec3 fireballInAirPosition = blockHitResult.getLocation() //in front
                             //Ensures that the fireballs are evenly distributed in front of the player
-                            .add(playerStartDirRight.scale((incremented * (fireballAmount / 2)) - (changePos + incremented / 2))) //left/right
-                            .add(0, +0.25, 0); //up/down
+                            .add(playerStartDirRight.scale((playerStartDirRightScale))) //left/right
+                            .add(playerStartDirRightBlockHitX, playerStartDirRightBlockHitY, playerStartDirRightBlockHitZ); //up/down
                     //Sets the fireball's position
                     fireballAir.moveOrInterpolateTo(fireballInAirPosition);
             }
@@ -105,7 +99,7 @@ public class FireballShotgunWand extends Item {
             changePos += incremented;
         }
             level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 0.8F, 1.0F);
+                    SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, volume, pitch);
         }
         return null;
     }

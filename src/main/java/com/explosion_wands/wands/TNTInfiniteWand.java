@@ -21,7 +21,6 @@ public class TNTInfiniteWand extends Item {
         super(properties);
     }
 
-    //Initializes the item
     public static InteractionResult use(Item item, Level level, Player player, InteractionHand hand) {
         BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
         if (hitResult.getType() != HitResult.Type.BLOCK && !level.isClientSide()) {
@@ -31,20 +30,29 @@ public class TNTInfiniteWand extends Item {
         }
     }
 
-    public static PrimedTnt asPrimedTnt(Item item, Level level, Player player, InteractionHand hand) {
+    public static PrimedTnt asPrimedTnt(Level level, Player player) {
+        float volume = 0.4F;
+        float pitch = 1.0F;
         int velocity = 4;
         BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
         double dirX = player.getX();
         double dirY = player.getY();
         double dirZ = player.getZ();
-
+        double scale = 3.0;
+        double addedXDir = 0;
+        double addedYDir = player.getEyeHeight() - 0.25;
+        double addedZDir = 0;
+        boolean discardOnFirstUse = false;
+        boolean explodeOnContact = true;
+        float explosionPower = 10.0F;
+        int fuse = 500;
         Vec3 playerLookDir = player.getLookAngle();
         playerLookDir.add(dirX, dirY, dirZ).normalize();
         CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level, EntitySpawnReason.TRIGGERED);
         if(customTnt != null) {
             if (blockHitResult.getType() == HitResult.Type.BLOCK) {
-                Vec3 customTntInAirPosition = player.position().add(0, player.getEyeHeight() - 0.25, 0)
-                        .add(playerLookDir.scale(3.0));
+                Vec3 customTntInAirPosition = player.position().add(addedXDir, addedYDir, addedZDir)
+                        .add(playerLookDir.scale(scale));
                 customTnt.moveOrInterpolateTo(customTntInAirPosition);
                 } else {
                 //Works for the most part
@@ -53,11 +61,11 @@ public class TNTInfiniteWand extends Item {
                 }
                 customTnt.setDeltaMovement(playerLookDir.scale(velocity));
                 level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                        SoundEvents.TNT_PRIMED, SoundSource.PLAYERS, 0.4F, 1.0F);
-                customTnt.setDiscardOnFirstUse(false);
-                customTnt.setExplodeOnContact(true);
-                customTnt.setExplosionPower(10F);
-                customTnt.setFuse(500);
+                        SoundEvents.TNT_PRIMED, SoundSource.PLAYERS, volume, pitch);
+                customTnt.setDiscardOnFirstUse(discardOnFirstUse);
+                customTnt.setExplodeOnContact(explodeOnContact);
+                customTnt.setExplosionPower(explosionPower);
+                customTnt.setFuse(fuse);
                 if(customTnt.touchingUnloadedChunk()) {
                 customTnt.discard();
                 }

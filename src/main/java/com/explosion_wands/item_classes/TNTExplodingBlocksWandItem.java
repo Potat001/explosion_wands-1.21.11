@@ -15,6 +15,6 @@ public class TNTExplodingBlocksWandItem extends Item {
 
     @Override
     public @NonNull InteractionResult use(@NonNull Level level, @NonNull Player player, @NonNull InteractionHand hand) {
-        return TNTExplodingBlocksWand.use(this, level, player, hand);
+        return TNTExplodingBlocksWand.use(level, player);
     }
 }

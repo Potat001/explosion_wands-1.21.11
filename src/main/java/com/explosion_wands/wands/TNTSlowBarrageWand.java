@@ -5,19 +5,14 @@ import com.explosion_wands.entity.ModEntities;
 import com.explosion_wands.tick.TickQueue;
 import com.explosion_wands.tick.TickQueueManager;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
-import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -28,52 +23,35 @@ import java.util.*;
 public class TNTSlowBarrageWand {
 	static int tntAmountPerTick = 4;
 	private static final int tntAmount = 100;
-	static int iterations = 0;
-	private static List<Runnable> QUEUE = new ArrayList<>();
-	private static int tickCounter = 0;
-    private static final Queue<Runnable> nextTickQueue = new ArrayDeque<>();
-	//Queue<Runnable> queue = new ArrayDeque<>();
+	private static final List<Runnable> QUEUE = new ArrayList<>();
 	public static void add(Runnable task) {
 		QUEUE.add(task);
 	}
-/*
-	//Old tick queue system. Works for 1 queue at a time by clearing any other queues that are triggered before this one is finished
-	public static void tick() {
-		//Ensures that block hits that are happening before the previous queue(s) have finished are not queued for later;
-		//Only allows one complete primed TNT iteration to happen at a time. Might expand to make them run in parallel in the future
-		if (QUEUE.isEmpty() || iterations > tntAmount) {
-			iterations = 0;
-			QUEUE.clear();
-			return;
-		}
-		iterations+= tntAmountPerTick;
-		tickCounter++;
-		if (tickCounter >= 1 && iterations <= tntAmount) {
-				//Resets the tick counter
-				tickCounter = 0;
-				//Speeds up the iteration of placing the primed TNTs
-            for(int i = 0; i < tntAmountPerTick; i++) {
-					QUEUE.remove(0).run();
-				}
-				//System.out.println("Iterations: " + iterations);
-		}
-	}
- */
 
-
-	//Hits a block
-	public static InteractionResult use(Item item, Level level, Player player, InteractionHand hand)  {
+	public static InteractionResult use(Level level, Player player)  {
 		if (level instanceof ServerLevel serverLevel && player != null && !level.isClientSide()) {
 			TickQueue queue = TickQueueManager.createQueue(tntAmount, 4);
+			float volume = 0.4F;
+			float pitch = 1.0F;
 			int reach = 360;
 			final double[] spawnHeight = {30};
 			double min = 1.0;
 			double max = 4.0;
+			int initialPos = 0;
+			int angleValue = 90;
+			int defaultValues = 0;
+			float explosionPower = 6.0F;
+			boolean explodeOnContact = false;
+			double defaultGravity = 0.15;
+			int particleThickness = 700;
+			int particleSpeed = 1;
+			int moduloParticle = 6;
+			int moduloRest = 1;
 			RandomSource random = RandomSource.create();
 			//Randomized the distribution of particle effects based on the min/max values specified
 			double randomDistr = min + random.nextDouble() * (max - min);
 			//Makes the start spawn angle of the TNT be equal to the direction the player is facing (default (0): east)
-			final double[] angle = {Math.toRadians(player.getYRot() + 90)};
+			final double[] angle = {Math.toRadians(player.getYRot() + angleValue)};
 			double angleStep = Math.PI / ((double) tntAmount / 2); //How smooth the curve looks
 			double amplitude = 15; //Width of the curve
 			//Making sure the primed TNTs explode when all the primed TNTs in the current loop has spawned
@@ -89,7 +67,7 @@ public class TNTSlowBarrageWand {
 					player
 			));
 			BlockPos target = blockHitResult.getBlockPos();
-			final double[] changePosition = {0}; //Initial position of the starting TNT
+			final double[] changePosition = {initialPos}; //Initial position of the starting TNT
 				for (int i = 0; i < tntAmount; i++) {
 						//Fires a TNT at the interval specified in tick()
 					int finalI = i;
@@ -100,23 +78,23 @@ public class TNTSlowBarrageWand {
 						CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level, EntitySpawnReason.TRIGGERED);
 						if(customTnt != null) {
 							//X dir: cos, Z dir: sin, makes a circle
-							customTnt.setPos(target.getX() + (Math.cos(angle[0]) * amplitude),
-									target.getY() + spawnHeight[0],
-									target.getZ() + (Math.sin(angle[0]) * amplitude));
+							customTnt.setPos(target.getX() + (Math.cos(angle[defaultValues]) * amplitude),
+									target.getY() + spawnHeight[defaultValues],
+									target.getZ() + (Math.sin(angle[defaultValues]) * amplitude));
 							customTnt.setFuse(tntFuseTimer);
 							//Performance improvement: Spawns a particle effect on each TNT that satisfy the modulus criteria instead of on each TNT
-							if ((finalI % 6) == 1) {
+							if ((finalI % moduloParticle) == moduloRest) {
 								//Particles only spawn 32 blocks away from the player. Might bypass in future
-								serverLevel.sendParticles(ParticleTypes.COPPER_FIRE_FLAME, customTnt.getX(), customTnt.getY(), customTnt.getZ(), 700, randomDistr, randomDistr, randomDistr, 1);
+								serverLevel.sendParticles(ParticleTypes.COPPER_FIRE_FLAME, customTnt.getX(), customTnt.getY(), customTnt.getZ(), particleThickness, randomDistr, randomDistr, randomDistr, particleSpeed);
 							}
-							customTnt.setExplosionPower(6.0F);
-							customTnt.setExplodeOnContact(false);
-							customTnt.setDefaultGravity(0.15);
+							customTnt.setExplosionPower(explosionPower);
+							customTnt.setExplodeOnContact(explodeOnContact);
+							customTnt.setDefaultGravity(defaultGravity);
 							//Changes the initial angle by the value of angleStep every iteration so the TNTs are not frozen
-							angle[0] += angleStep;
+							angle[defaultValues] += angleStep;
 							//Height of the cos curve every iteration
-							changePosition[0] += Math.PI / ((double) (tntAmount / 4) / 2);
-							spawnHeight[0] -= 0.25;
+							changePosition[defaultValues] += Math.PI / ((double) (tntAmount / 4) / 2);
+							spawnHeight[defaultValues] -= 0.25;
 							//Adds the primed TNT to the world
 							serverLevel.addFreshEntity(customTnt);
 							if(customTnt.touchingUnloadedChunk()) {
@@ -127,11 +105,11 @@ public class TNTSlowBarrageWand {
 								level.playSound(null,
 										blockHitResult.getBlockPos().getX(),
 										//Makes the sound play as close to the y direction the player is at
-										blockHitResult.getBlockPos().getY() + spawnHeight[0],
+										blockHitResult.getBlockPos().getY() + spawnHeight[defaultValues],
 										blockHitResult.getBlockPos().getZ(),
 										SoundEvents.TNT_PRIMED,
 										SoundSource.PLAYERS,
-										0.4F, 1.0F);
+										volume, pitch);
 							}
 						}
 					});

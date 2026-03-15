@@ -33,6 +33,5 @@ public abstract class LargeFireballMixin {
             boolean shouldSpawnFire = spawnedFireball.getTags().contains("fireball");
                 instance.explode(source, x, y, z, r, shouldSpawnFire, blockInteraction);
     }
-
      */
 }

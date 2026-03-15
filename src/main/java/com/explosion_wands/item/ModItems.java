@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 
 public class ModItems {
+    public static int stackSize = 1;
 //WANDS
     //FIREBALL BARRAGE WAND (previously FIREBALL STICK BLOCK)
     public static final ResourceKey<Item> FIREBALL_BARRAGE_WAND_KEY =
@@ -19,7 +20,7 @@ public class ModItems {
             register(FIREBALL_BARRAGE_WAND_KEY,
                     new FireballBarrageWandItem(
                             new Item.Properties()
-                                    .stacksTo(1)
+                                    .stacksTo(stackSize)
                                     .setId(FIREBALL_BARRAGE_WAND_KEY)));
 
     //FIREBALL HITSCAN WAND (previously FIREBALL STICK HITSCAN AIR)
@@ -30,7 +31,7 @@ public class ModItems {
             register(FIREBALL_HITSCAN_WAND_KEY,
                     new FireballHitscanWandItem(
                             new Item.Properties()
-                                    .stacksTo(1)
+                                    .stacksTo(stackSize)
                                     .setId(FIREBALL_HITSCAN_WAND_KEY)));
 
     //FIREBALL SCATTER WAND (previously TNT FIREBALL STICK EXPLOSION BLOCK)
@@ -41,7 +42,7 @@ public class ModItems {
             register(FIREBALL_SCATTER_WAND_KEY,
                     new FireballScatterWandItem(
                             new Item.Properties()
-                                    .stacksTo(1)
+                                    .stacksTo(stackSize)
                                     .setId(FIREBALL_SCATTER_WAND_KEY)));
 
     //FIREBALL SHOTGUN WAND (previously FIREBALL STICK SHOTGUN AIR)
@@ -52,7 +53,7 @@ public class ModItems {
             register(FIREBALL_SHOTGUN_WAND_KEY,
                     new FireballShotgunWandItem(
                             new Item.Properties()
-                                    .stacksTo(1)
+                                    .stacksTo(stackSize)
                                     .setId(FIREBALL_SHOTGUN_WAND_KEY)));
 
     //FIREBALL WAND (previously FIREBALL STICK AIR)
@@ -63,7 +64,7 @@ public class ModItems {
             register(FIREBALL_WAND_KEY,
                     new FireballWandItem(
                             new Item.Properties()
-                                    .stacksTo(1)
+                                    .stacksTo(stackSize)
                                     .setId(FIREBALL_WAND_KEY)));
 
     //TNT CHICKEN WAND (previously TNT STICK AIR)
@@ -74,7 +75,7 @@ public class ModItems {
             register(TNT_CHICKEN_WAND_KEY,
                     new TNTChickenWandItem(
                             new Item.Properties()
-                                    .stacksTo(1)
+                                    .stacksTo(stackSize)
                                     .setId(TNT_CHICKEN_WAND_KEY)));
 
     //TNT EXPLODING BLOCKS WAND (previously TNT STICK FALLING BLOCK)
@@ -85,7 +86,7 @@ public class ModItems {
             register(TNT_EXPLODING_BLOCKS_WAND_KEY,
                     new TNTExplodingBlocksWandItem(
                             new Item.Properties()
-                                    .stacksTo(1)
+                                    .stacksTo(stackSize)
                                     .setId(TNT_EXPLODING_BLOCKS_WAND_KEY)));
 
     //TNT EXPLODING ENTITIES WAND (previously TNT STICK ENTITIES BLOCK)
@@ -96,7 +97,7 @@ public class ModItems {
             register(TNT_EXPLODING_ENTITIES_WAND_KEY,
                     new TNTExplodingEntitiesWandItem(
                             new Item.Properties()
-                                    .stacksTo(1)
+                                    .stacksTo(stackSize)
                                     .setId(TNT_EXPLODING_ENTITIES_WAND_KEY)));
 
     //TNT FALLING WAND
@@ -107,7 +108,7 @@ public class ModItems {
             register(TNT_FALLING_WAND_KEY,
                     new TNTFallingWandItem(
                             new Item.Properties()
-                                    .stacksTo(1)
+                                    .stacksTo(stackSize)
                                     .setId(TNT_FALLING_WAND_KEY)));
 
     //TNT INFINITE WAND (previously TNT STICK UNBOUND AIR)
@@ -118,7 +119,7 @@ public class ModItems {
             register(TNT_INFINITE_WAND_KEY,
                     new TNTInfiniteWandItem(
                             new Item.Properties()
-                                    .stacksTo(1)
+                                    .stacksTo(stackSize)
                                     .setId(TNT_INFINITE_WAND_KEY)));
 
     //TNT INSTANT BARRAGE WAND (previously TNT STICK UNBOUND BLOCK)
@@ -129,7 +130,7 @@ public class ModItems {
             register(TNT_INSTANT_BARRAGE_WAND_KEY,
                     new TNTInstantBarrageWandItem(
                             new Item.Properties()
-                                    .stacksTo(1)
+                                    .stacksTo(stackSize)
                                     .setId(TNT_INSTANT_BARRAGE_WAND_KEY)));
 
     //TNT SLOW BARRAGE WAND (previously TNT STICK BLOCK)
@@ -140,7 +141,7 @@ public class ModItems {
             register(TNT_SLOW_BARRAGE_WAND_KEY,
                     new TNTSlowBarrageWandItem(
                             new Item.Properties()
-                                    .stacksTo(1)
+                                    .stacksTo(stackSize)
                                     .setId(TNT_SLOW_BARRAGE_WAND_KEY)));
 
     //TNT TORNADO WAND (previously TNT STICK MID AIR)
@@ -151,7 +152,7 @@ public class ModItems {
             register(TNT_TORNADO_WAND_KEY,
                     new TNTTornadoWandItem(
                             new Item.Properties()
-                                    .stacksTo(1)
+                                    .stacksTo(stackSize)
                                     .setId(TNT_TORNADO_WAND_KEY)));
 
 //HELPER METHODS

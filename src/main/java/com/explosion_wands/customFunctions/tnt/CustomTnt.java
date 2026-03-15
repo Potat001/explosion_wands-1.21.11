@@ -2,23 +2,15 @@ package com.explosion_wands.customFunctions.tnt;
 
 import com.explosion_wands.tick.TickQueue;
 import com.explosion_wands.tick.TickQueueManager;
-import com.mojang.logging.LogUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import org.slf4j.Logger;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class CustomTnt extends PrimedTnt {
-    static int aliveTNTAmount = 0;
 
     public CustomTnt(EntityType<? extends CustomTnt> type, Level level) {
         super(type, level);
@@ -27,18 +19,17 @@ public class CustomTnt extends PrimedTnt {
     //Ability to separate the values for the explosion power of TNTs for different classes
     float explosionPower = 4.0F; //Default: 4.0F
     double defaultGravity = 0.04; //Default: 0.04
+
     //CUSTOM-MADE
 
     //onGround makes the primedTNT only explode when it hits a horizontal surface, not a vertical surface
     boolean explodeOnContact = false;
     //Type of entity that will spawn after explosion
     EntityType<?> entityToSpawn = EntityType.CHICKEN;
-    boolean customTntToSpawn = false;
     //Amount of entities spawned after explosion
     int entityAmount = 20;
     //If entities will spawn after explosion, before the primed TNT is discarded
     boolean entitySpawnAfterExplosion = false;
-    boolean customTntSpawnAfterExplosion = false;
     //If the shape of the spawned entities resemble a circle
     boolean isCircle = true;
     boolean isTornado = false;
@@ -52,12 +43,9 @@ public class CustomTnt extends PrimedTnt {
     double yIncrement = 0;
     //Amplitude of the circle
     double amplitude = 10;
-    //If anything else happens after the primed TNT is discarded
-    boolean afterSpawnEffects = false;
     //How long the delay for the after spawn effects are after the primed TNT is first discarded
     int initialExplosionDelayCounter = 40; //Ticks
     //How long the delay for the spawn effects are after the initial delay are
-    int afterFirstExplosionDelay = 5; //Ticks
     //Whether the after spawn effects should explode each entity individually or every entity at once
     boolean individualEntityExplosions = true;
     //Whether the TNT should be discarded after its first use (explosion) or not
@@ -74,7 +62,6 @@ public class CustomTnt extends PrimedTnt {
     //Runnable: Functional interface with the method run()
     //Essentially stores the code in a QUEUE to be used later in onPostEntitySpawning() when !QUEUE.isEmpty
     private final List<Runnable> QUEUE = new ArrayList<>();
-
     //Amount of ticks since the primed TNT first exploded
     //Helper method, won't have to write QUEUE.add(() -> { "code" });
     public void add(Runnable task) {
@@ -85,14 +72,12 @@ public class CustomTnt extends PrimedTnt {
     public void tick() {
         //Inherits logic from tick(), where we only override what's specified under. Otherwise, we have to put *all* the logic that tick() uses here
         super.tick();
-
         if(shouldExplode()) {
             onPreExplode();
             discardOnFirstUse();
             explode();
             onPostExplode();
         }
-        //System.out.println("Alive TNTs: " + aliveTNTAmount);
     }
 
     //If the primed TNT should explode given *these* conditions
@@ -221,22 +206,10 @@ public class CustomTnt extends PrimedTnt {
             //Checks the time between the primedTNT explosions
             if (lastExplosionTick == -1 && explosionAmount == 0) {
                 ticksSinceLastExplosion = 20;
-                explosionAmount++;
             } else {
                 ticksSinceLastExplosion = currentTick - lastExplosionTick;
-                explosionAmount++;
             }
-            BlockPos pos = this.blockPosition();
-            //BlockState state = level().getBlockState(pos);
-            //Block block = state.getBlock();
-            //Vec3 explosionPos = this.position();
-            //Vec3 blockCenter = Vec3.atCenterOf(pos);
-            //double distance = explosionPos.distanceTo(blockCenter);
-            //double maxRadius = explosionPower * 2.0;
-            //float resistance = getBlockState().getBlock().getExplosionResistance();
-            //float effectivePower = explosionPower * (1.0F - (float)(distance / maxRadius));
-            //Checks if the primedTNT touches water
-            boolean inWater = level().getFluidState(pos).is(FluidTags.WATER);
+            explosionAmount++;
             if (exploded) {
                 setDefaultGravity(0.30);
                 lastExplosionTick = (int) level().getGameTime();
@@ -250,10 +223,7 @@ public class CustomTnt extends PrimedTnt {
                     this.discard();
                 serverLevel.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, getX(), getY() + 2, getZ(), 2000, 4, 4, 4, 0.1);
             }
-
-                if (ticksSinceLastExplosion > 5 || (ticksSinceLastExplosion <= 5 && explosionAmount % 5 == 1) && !discardTNT) {
-                    //serverLevel.sendParticles(ParticleTypes.FLAME, getX(), getY() - 1, getZ(), 700, 1.5, 1.5, 1.5, 0.1);
-            }
+            //Debugging
             //System.out.println("Last explosion tick: " + ticksSinceLastExplosion);
             //System.out.println("Explosion amount: " + explosionAmount);
         }
@@ -323,7 +293,7 @@ public class CustomTnt extends PrimedTnt {
         this.isCircle = circle;
     }
 
-    //If circle: The amplitude of the circle
+    //If it's a circle: Get/set the amplitude of the circle
     public double getAmplitude() {
         return this.amplitude;
     }
@@ -341,7 +311,7 @@ public class CustomTnt extends PrimedTnt {
         this.xChange = x;
     }
 
-    //Change the repeating y direction values
+    //Change the repeating Y direction values
     public double getYChange() {
         return yChange;
     }
@@ -349,7 +319,7 @@ public class CustomTnt extends PrimedTnt {
     public void setYChange(double y) {
         this.yChange = y;
     }
-
+    //How much Y increments by every loop
     public double getYIncrement() {
         return yIncrement;
     }
@@ -363,12 +333,13 @@ public class CustomTnt extends PrimedTnt {
         return zChange;
     }
 
+    //Change the repeating Z direction values
     public void setZChange(double z) {
         this.zChange = z;
     }
 
     //If the primed tnt should be discarded when it first explodes (first use). If yes, continues exploding
-    //after it's first time use, only discarded when the fuse timer = 0. If no, explodes once, is discarded afterwards.
+    //after it's first time use, only discarded when the fuse timer = 0. If no, explodes once, is discarded afterward.
     public boolean getDiscardOnFirstUse() {
         return this.discardTNT;
     }
@@ -403,6 +374,8 @@ public class CustomTnt extends PrimedTnt {
         this.exploded = hasExploded;
     }
 
+    //When entities are set to spawn, this decides whether the queue should
+    //spawn the entities gradually at a set interval, or spawn them all at the same time
     public boolean getGradualEntitySpawnAfterExplosion() {
         return gradualEntitySpawnAfterExplosion;
     }

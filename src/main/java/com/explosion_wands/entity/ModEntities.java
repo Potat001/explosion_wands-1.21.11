@@ -1,6 +1,5 @@
 package com.explosion_wands.entity;
 
-import com.explosion_wands.customFunctions.falling_block.CustomFallingBlockEntity;
 import com.explosion_wands.customFunctions.tnt.CustomTnt;
 import com.explosion_wands.initialization.ModInitialization;
 import net.minecraft.core.Registry;
@@ -11,6 +10,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.*;
 
 public class ModEntities {
+    public static float sizedF = 0.98F;
+    public static float sizedG = 0.98F;
 
     //CUSTOM TNT
     public static final ResourceKey<EntityType<?>> CUSTOM_TNT_KEY =
@@ -21,19 +22,8 @@ public class ModEntities {
                             EntityType
                                     .Builder
                                     .of(CustomTnt::new, MobCategory.MISC)
-                                    .sized(0.98F, 0.98F)
+                                    .sized(sizedF, sizedG)
                                     .build(CUSTOM_TNT_KEY));
-
-    //CUSTOM FALLING BLOCK ENTITY
-    public static final ResourceKey<EntityType<?>> CUSTOM_FALLING_BLOCK_ENTITY_KEY =
-            key("custom_falling_block_entity");
-
-    public static final EntityType<CustomFallingBlockEntity> CUSTOM_FALLING_BLOCK_ENTITY =
-            register(CUSTOM_FALLING_BLOCK_ENTITY_KEY,
-                    EntityType
-                            .Builder
-                            .of(CustomFallingBlockEntity::new, MobCategory.MISC)
-                            .build(CUSTOM_FALLING_BLOCK_ENTITY_KEY));
 
     //HELPER METHODS
     private static ResourceKey<EntityType<?>> key(String name) {

@@ -3,32 +3,29 @@ package com.explosion_wands.wands;
 import com.explosion_wands.customFunctions.tnt.CustomTnt;
 import com.explosion_wands.entity.ModEntities;
 import com.explosion_wands.sharedValues.ExplosionEntities;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class TNTFallingWand {
-    //Hits a block
-    public static InteractionResult use(Item item, Level level, Player player, InteractionHand hand)  {
 
-        if (level instanceof ServerLevel serverLevel && player != null && !level.isClientSide()) {
+    public static InteractionResult use(Level level, Player player)  {
+        if (level instanceof ServerLevel serverLevel && player != null) {
             int maxEntities = ExplosionEntities.maxEntities;
             int fuse = ExplosionEntities.fuse;
             int spawnedEntities = ExplosionEntities.spawnedEntities;
-            float minExplosion;
-            minExplosion = 0.5F;
-            float maxExplosion;
-            maxExplosion = 4F;
+            float minExplosion = 0.2F;
+            float maxExplosion = 2F;
+            int secondFuse = 200;
+            boolean explodeOnContact = true;
+            float explosionPower = 10.0F;
             int minIncrement = ExplosionEntities.minIncrement;
             int maxIncrement = ExplosionEntities.maxIncrement;
             RandomSource random = RandomSource.create();
@@ -64,7 +61,7 @@ public class TNTFallingWand {
                         CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level, EntitySpawnReason.TRIGGERED);
                         CustomTnt customTnt2 = ModEntities.CUSTOM_TNT.create(level, EntitySpawnReason.TRIGGERED);
                         //This does not make a perfect circle, but it should not be noticeable
-                            if (customTnt != null && increment <= 1) {
+                            if (increment <= randomExplosion && customTnt != null) {
                                 customTnt.setPos(target.getX(),
                                         target.getY() + spawnHeight,
                                         target.getZ()
@@ -79,20 +76,22 @@ public class TNTFallingWand {
                                         target.getY() + y + spawnHeight,
                                         target.getZ() + z
                                 );
-                                customTnt2.setFuse(500);
-                                customTnt2.setExplodeOnContact(true);
-                                customTnt2.setExplosionPower(5F);
+
+                                customTnt2.setFuse(secondFuse);
+                                customTnt2.setExplodeOnContact(explodeOnContact);
+                                customTnt2.setExplosionPower(explosionPower);
                                 serverLevel.addFreshEntity(customTnt2);
                             } else {
                                 customTnt2.discard();
                             }
-                            x = r * Math.sin(theta) * Math.cos(phi) ;
+                            x = r * Math.sin(theta) * Math.cos(phi);
                             y = r * Math.cos(theta);
                             z = r * Math.sin(theta) * Math.sin(phi);
                             increment++;
                         }
                     }
                 }
+                //Debugging
                 /*
                 System.out.println(
                         "Pre-calculated entities:   " + spawnedEntities
@@ -101,17 +100,6 @@ public class TNTFallingWand {
                                 + ",   random increment:   " + 1
                 );
                  */
-            //Plays a sound when a block is clicked
-            /*
-            level.playSound(null,
-                    player.getX(),
-                    player.getY(),
-                    player.getZ(),
-                    SoundEvents.TNT_PRIMED,
-                    SoundSource.PLAYERS,
-                    0.4F,
-                    1.0F);
-             */
             }
             return InteractionResult.SUCCESS;
         } else {
