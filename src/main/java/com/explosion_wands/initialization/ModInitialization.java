@@ -71,11 +71,11 @@ public class ModInitialization implements ModInitializer {
         ItemGroupEvents.modifyEntriesEvent(creativeModeTabs2)
                 .register(entries -> entries.accept(ModItems.TNT_FALLING_WAND));
 
-        //TNT INFINITE WAND
+        //TNT DRILL WAND
         ItemGroupEvents.modifyEntriesEvent(creativeModeTabs1)
-                .register(entries -> entries.accept(ModItems.TNT_INFINITE_WAND));
+                .register(entries -> entries.accept(ModItems.TNT_DRILL_WAND));
         ItemGroupEvents.modifyEntriesEvent(creativeModeTabs2)
-                .register(entries -> entries.accept(ModItems.TNT_INFINITE_WAND));
+                .register(entries -> entries.accept(ModItems.TNT_DRILL_WAND));
 
         //TNT INSTANT BARRAGE WAND
         ItemGroupEvents.modifyEntriesEvent(creativeModeTabs1)

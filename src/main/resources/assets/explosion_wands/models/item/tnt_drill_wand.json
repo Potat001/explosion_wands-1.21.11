@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "explosion_wands:item/tnt_infinite_wand"
+    "layer0": "explosion_wands:item/tnt_drill_wand"
   }
 }

@@ -111,16 +111,16 @@ public class ModItems {
                                     .stacksTo(stackSize)
                                     .setId(TNT_FALLING_WAND_KEY)));
 
-    //TNT INFINITE WAND (previously TNT STICK UNBOUND AIR)
-    public static final ResourceKey<Item> TNT_INFINITE_WAND_KEY =
-            key("tnt_infinite_wand");
+    //TNT DRILL WAND (previously TNT STICK UNBOUND AIR and TNT INFINITE WAND)
+    public static final ResourceKey<Item> TNT_DRILL_WAND_KEY =
+            key("tnt_drill_wand");
 
-    public static final Item TNT_INFINITE_WAND =
-            register(TNT_INFINITE_WAND_KEY,
-                    new TNTInfiniteWandItem(
+    public static final Item TNT_DRILL_WAND =
+            register(TNT_DRILL_WAND_KEY,
+                    new TNTDrillWandItem(
                             new Item.Properties()
                                     .stacksTo(stackSize)
-                                    .setId(TNT_INFINITE_WAND_KEY)));
+                                    .setId(TNT_DRILL_WAND_KEY)));
 
     //TNT INSTANT BARRAGE WAND (previously TNT STICK UNBOUND BLOCK)
     public static final ResourceKey<Item> TNT_INSTANT_BARRAGE_WAND_KEY =

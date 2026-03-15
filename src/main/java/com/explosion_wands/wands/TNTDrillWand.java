@@ -16,8 +16,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class TNTInfiniteWand extends Item {
-    public TNTInfiniteWand(Properties properties) {
+public class TNTDrillWand extends Item {
+    public TNTDrillWand(Properties properties) {
         super(properties);
     }
 

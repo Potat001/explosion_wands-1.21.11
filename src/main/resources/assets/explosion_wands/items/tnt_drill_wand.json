@@ -1,0 +1,6 @@
+{
+	"model": {
+		"type": "minecraft:model",
+		"model": "explosion_wands:item/tnt_drill_wand"
+	}
+}
