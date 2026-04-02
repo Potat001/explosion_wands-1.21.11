@@ -55,7 +55,6 @@ public class FireballShotgunWand extends Item {
         Vec3 playerStartDir = player.getEyePosition();
         playerStartDirForward.add(dirX, dirY, dirZ).normalize();
         Vec3 playerStartDirRight = playerStartDirForward.cross(playerUpDir).normalize();
-        
         for(int i = 0; i < fireballAmount; i++) {
             double playerStartDirRightScale = incremented * (fireballAmount / 2) - (changePos + incremented / 2);
             LargeFireball fireballAir = new LargeFireball(level, player, playerStartDirForward, explosionPowerAir);
