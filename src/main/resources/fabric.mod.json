@@ -8,8 +8,8 @@
 		"Potat"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://modrinth.com/mod/explosion-wands",
+		"sources": "https://github.com/Potat001/ExplosionWands"
 	},
 	"license": "CC0-1.0",
 	"icon": "icon.png",
