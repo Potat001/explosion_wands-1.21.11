@@ -114,7 +114,7 @@ public class FireballHitscanWand extends Item {
                         //Changes the fireball's position to the position of the entity we clicked on
                         Vec3 fireballOnEntityPosition = targetEntity.position();
                         //Teleports the fireball into the entity
-                        fireballAir.moveOrInterpolateTo(fireballOnEntityPosition);
+                        fireballAir.moveOrInterpolateTo(fireballOnEntityPosition, 0, 0);
                         //Filters out entities by if they're living (mobs) or non-living, like
                         //falling blocks and boats
                         if(entityHitResult.getEntity() instanceof LivingEntity) {

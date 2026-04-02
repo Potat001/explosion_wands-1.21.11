@@ -1,5 +1,6 @@
 package com.explosion_wands.wands;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -33,9 +34,11 @@ public class FireballWand extends Item {
         float pitch = 1.0F;
         BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
         //Clicks on air/liquid
-        int explosionPowerAir = 40;
+        int explosionPowerAir = 50;
         //fireball's velocity
-        int velocity = 10;
+        //Changes it to 5 since the game doesn't do well when the velocity is above 5 in this and probably other versions.
+        //Makes the explosion power slightly higher to compensate
+        int velocity = 5;
         double scale = 2.5;
         double addedXDir = 0;
         double addedYDir = player.getEyeHeight() - 0.25;
@@ -46,26 +49,28 @@ public class FireballWand extends Item {
         Vec3 playerLookDir = player.getLookAngle();
         playerLookDir.add(dirX, dirY, dirZ).normalize();
         LargeFireball fireballAir = new LargeFireball(level, player, playerLookDir, explosionPowerAir);
-        if(blockHitResult.getType() != HitResult.Type.BLOCK) {
-            Vec3 fireballInAirPosition = player.position().add(addedXDir, addedYDir, addedZDir)
-                    .add(playerLookDir.scale(scale));
-            //Sets the fireball's position
-            fireballAir.moveOrInterpolateTo(fireballInAirPosition);
-        } else {
-            //Does not work if it's at the very corner of a block, but it's more than good enough
-            Vec3 fireballInAirPosition = blockHitResult.getLocation();
-            //Sets the fireball's position
-            fireballAir.moveOrInterpolateTo(fireballInAirPosition);
+        if (level instanceof ServerLevel server) {
+            if (blockHitResult.getType() != HitResult.Type.BLOCK) {
+                Vec3 fireballInAirPosition = player.position().add(addedXDir, addedYDir, addedZDir)
+                        .add(playerLookDir.scale(scale));
+                //Sets the fireball's position
+                fireballAir.moveOrInterpolateTo(fireballInAirPosition, 0, 0);
+            } else {
+                //Does not work if it's at the very corner of a block, but it's more than good enough
+                Vec3 fireballInAirPosition = blockHitResult.getLocation();
+                //Sets the fireball's position
+                fireballAir.moveOrInterpolateTo(fireballInAirPosition, 0, 0);
+            }
+            //Set's the fireball's velocity
+            fireballAir.setDeltaMovement(playerLookDir.scale(velocity));
+            fireballAir.addTag("fireball");
+            //Spawns the fireball
+            if (fireballAir.touchingUnloadedChunk()) {
+                fireballAir.discard();
+            }
+            server.playSound(null, player.getX(), player.getY(), player.getZ(),
+                    SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, volume, pitch);
         }
-        //Set's the fireball's velocity
-        fireballAir.setDeltaMovement(playerLookDir.scale(velocity));
-        fireballAir.addTag("fireball");
-        //Spawns the fireball
-        if(fireballAir.touchingUnloadedChunk()) {
-            fireballAir.discard();
-        }
-        level.playSound(null, player.getX(), player.getY(), player.getZ(),
-        SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, volume, pitch);
         return fireballAir;
     }
 }

@@ -65,7 +65,7 @@ public class FireballShotgunWand extends Item {
                             .add(playerStartDirRight.scale((playerStartDirRightScale))) //left/right
                             .add(directlyUp.scale(directlyUpScale)); //up/down
                     //Sets the fireball's position
-                    fireballAir.moveOrInterpolateTo(fireballInAirPosition);
+                    fireballAir.moveOrInterpolateTo(fireballInAirPosition, 0, 0);
             }
             if(blockHitResult.getType() == HitResult.Type.BLOCK) {
                     Vec3 fireballInAirPosition = blockHitResult.getLocation() //in front
@@ -73,7 +73,7 @@ public class FireballShotgunWand extends Item {
                             .add(playerStartDirRight.scale((playerStartDirRightScale))) //left/right
                             .add(playerStartDirRightBlockHitX, playerStartDirRightBlockHitY, playerStartDirRightBlockHitZ); //up/down
                     //Sets the fireball's position
-                    fireballAir.moveOrInterpolateTo(fireballInAirPosition);
+                    fireballAir.moveOrInterpolateTo(fireballInAirPosition, 0, 0);
             }
             //Set's the fireball's velocity
             fireballAir.setDeltaMovement(playerStartDirForward.scale(velocity));

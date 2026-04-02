@@ -111,7 +111,7 @@ public class TNTSlowBarrageWand {
 							//Performance improvement: Spawns a particle effect on each TNT that satisfy the modulus criteria instead of on each TNT
 							if ((finalI % moduloParticle) == moduloRest) {
 								//Particles only spawn 32 blocks away from the player. Might bypass in future
-								serverLevel.sendParticles(ParticleTypes.COPPER_FIRE_FLAME, customTnt.getX(), customTnt.getY(), customTnt.getZ(), particleThickness, randomDistr, randomDistr, randomDistr, particleSpeed);
+								serverLevel.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, customTnt.getX(), customTnt.getY(), customTnt.getZ(), particleThickness, randomDistr, randomDistr, randomDistr, particleSpeed);
 							}
 							customTnt.setExplosionPower(explosionPower);
 							customTnt.setExplodeOnContact(explodeOnContact);
