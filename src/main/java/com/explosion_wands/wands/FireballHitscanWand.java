@@ -63,7 +63,9 @@ public class FireballHitscanWand extends Item {
         LargeFireball fireballAir = new LargeFireball(
                 level,
                 player,
-                playerLookDir,
+                dirX,
+                dirY,
+                dirZ,
                 explosionPowerAir);
         //Target entity
         EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(

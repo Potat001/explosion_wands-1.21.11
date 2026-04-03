@@ -41,10 +41,10 @@ public class TNTDrillWand extends Item {
             if (blockHitResult.getType() == HitResult.Type.BLOCK) {
                 Vec3 customTntInAirPosition = player.position().add(addedXDir, addedYDir, addedZDir)
                         .add(playerLookDir.scale(scale));
-                customTnt.moveTo(customTntInAirPosition, 0, 0);
+                customTnt.moveTo(customTntInAirPosition);
                 } else {
                 Vec3 customTntInAirPosition = blockHitResult.getLocation();
-                customTnt.moveTo(customTntInAirPosition, 0, 0);
+                customTnt.moveTo(customTntInAirPosition);
                 }
                 customTnt.setDeltaMovement(playerLookDir.scale(velocity));
                 customTnt.setDiscardOnFirstUse(discardOnFirstUse);

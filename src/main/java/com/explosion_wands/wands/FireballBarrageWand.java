@@ -56,7 +56,9 @@ public class FireballBarrageWand {
             LargeFireball largeFireball = new LargeFireball(
                     level,
                     player,
-                    dir,
+                    xDir,
+                    yDir,
+                    zDir,
                     explosionPower);
             EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(
                     level,
@@ -85,7 +87,9 @@ public class FireballBarrageWand {
                 largeFireball = new LargeFireball(
                         level,
                         player,
-                        dir,
+                        xDir,
+                        yDir,
+                        zDir,
                         explosionPower);
                 largeFireball.setPos(
                         target.getX() + (Math.cos(angle) * amplitude),

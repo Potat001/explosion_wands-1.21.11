@@ -45,7 +45,13 @@ public class FireballShotgunWand extends Item {
         Vec3 playerStartDirRight = playerStartDirForward.cross(playerUpDir).normalize();
         for(int i = 0; i < fireballAmount; i++) {
             double playerStartDirRightScale = incremented * (fireballAmount / 2) - (changePos + incremented / 2);
-            LargeFireball fireballAir = new LargeFireball(level, player, playerStartDirForward, explosionPowerAir);
+            LargeFireball fireballAir = new LargeFireball(
+                    level,
+                    player,
+                    playerStartDirForward.x(),
+                    playerStartDirForward.y(),
+                    playerStartDirForward.z(),
+                    explosionPowerAir);
             //Fireball's initial spawn position
             if(blockHitResult.getType() != HitResult.Type.BLOCK) {
                     Vec3 fireballInAirPosition = playerStartDir.add(playerStartDirForward.scale(playerStartDirForwardScale)) //in front
@@ -53,7 +59,7 @@ public class FireballShotgunWand extends Item {
                             .add(playerStartDirRight.scale((playerStartDirRightScale))) //left/right
                             .add(directlyUp.scale(directlyUpScale)); //up/down
                     //Sets the fireball's position
-                    fireballAir.moveTo(fireballInAirPosition, 0, 0);
+                    fireballAir.moveTo(fireballInAirPosition);
             }
             if(blockHitResult.getType() == HitResult.Type.BLOCK) {
                     Vec3 fireballInAirPosition = blockHitResult.getLocation() //in front
@@ -61,7 +67,7 @@ public class FireballShotgunWand extends Item {
                             .add(playerStartDirRight.scale((playerStartDirRightScale))) //left/right
                             .add(playerStartDirRightBlockHitX, playerStartDirRightBlockHitY, playerStartDirRightBlockHitZ); //up/down
                     //Sets the fireball's position
-                    fireballAir.moveTo(fireballInAirPosition, 0, 0);
+                    fireballAir.moveTo(fireballInAirPosition);
             }
             //Set's the fireball's velocity
             fireballAir.setDeltaMovement(playerStartDirForward.scale(velocity));

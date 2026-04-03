@@ -27,10 +27,12 @@ public class ModEntities {
 
     //HELPER METHODS
     private static ResourceKey<EntityType<?>> key(String name) {
+
         return ResourceKey.create(
                 Registries.ENTITY_TYPE,
-                ResourceLocation.fromNamespaceAndPath(ModInitialization.MOD_ID, name));
+                ResourceLocation.tryBuild(ModInitialization.MOD_ID, name));
     }
+
 
     private static <T extends Entity> EntityType<T> register(ResourceKey<EntityType<?>> key, EntityType<T> entityType) {
         return Registry.register(BuiltInRegistries.ENTITY_TYPE, key, entityType);

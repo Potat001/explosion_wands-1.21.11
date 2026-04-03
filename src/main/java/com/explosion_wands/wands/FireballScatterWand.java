@@ -55,7 +55,13 @@ public class FireballScatterWand {
             Vec3 playerEyeStart = player.getEyePosition();
             Vec3 playerLookAngle = player.getLookAngle();
             Vec3 playerEyeEnd = playerEyeStart.add(playerLookAngle.scale(reachBlock));
-            LargeFireball fireball = new LargeFireball(level, player, playerLookAngle, fireballExplosionPower);
+            LargeFireball fireball = new LargeFireball(
+                    level,
+                    player,
+                    playerLookAngle.x(),
+                    playerLookAngle.y(),
+                    playerLookAngle.z(),
+                    fireballExplosionPower);
             BlockHitResult blockHitResult = level.clip(new ClipContext(
                     playerEyeStart,
                     playerEyeEnd,
@@ -83,7 +89,13 @@ public class FireballScatterWand {
             if (spawnedEntities <= maxEntities) {
                 for (double theta = ExplosionEntities.theta; theta <= lessThanTheta; theta += incrementTheta) {
                     for (double phi = ExplosionEntities.phi; phi <= lessThanPhi; phi += incrementPhi) {
-                        fireball = new LargeFireball(level, player, playerLookAngle, fireballExplosionPower);
+                        fireball = new LargeFireball(
+                                level,
+                                player,
+                                playerLookAngle.x(),
+                                playerLookAngle.y(),
+                                playerLookAngle.z(),
+                                fireballExplosionPower);
                         CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level);
                         //This does not make a perfect circle, but it should not be noticeable
                         if (increment <= randomExplosion && customTnt != null) {

@@ -147,7 +147,7 @@ public class ModItems {
     private static ResourceKey<Item> key(String name) {
         return ResourceKey.create(
                 Registries.ITEM,
-                ResourceLocation.fromNamespaceAndPath(ModInitialization.MOD_ID, name));
+                ResourceLocation.tryBuild(ModInitialization.MOD_ID, name));
     }
 
     //Registering the item

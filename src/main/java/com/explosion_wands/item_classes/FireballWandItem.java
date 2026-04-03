@@ -20,9 +20,8 @@ public class FireballWandItem extends Item {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
         ItemStack itemStack = player.getItemInHand(hand);
-        if (hitResult.getType() != HitResult.Type.BLOCK && !level.isClientSide()) {
+        if (!level.isClientSide()) {
             Projectile projectile = FireballWand.asFireballProjectile(level, player);
             level.addFreshEntity(projectile);
         }

@@ -20,9 +20,8 @@ public class TNTChickenWandItem extends Item {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
         ItemStack itemStack = player.getItemInHand(hand);
-        if (hitResult.getType() != HitResult.Type.BLOCK && !level.isClientSide()) {
+        if (!level.isClientSide()) {
             PrimedTnt customTnt = TNTChickenWand.asPrimedTnt(level, player);
             if (customTnt != null) {
                 level.addFreshEntity(customTnt);

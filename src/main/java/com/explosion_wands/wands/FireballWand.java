@@ -36,18 +36,24 @@ public class FireballWand extends Item {
         double dirZ = player.getZ();
         Vec3 playerLookDir = player.getLookAngle();
         playerLookDir.add(dirX, dirY, dirZ).normalize();
-        LargeFireball fireballAir = new LargeFireball(level, player, playerLookDir, explosionPowerAir);
+        LargeFireball fireballAir = new LargeFireball(
+                level,
+                player,
+                playerLookDir.x(),
+                playerLookDir.y(),
+                playerLookDir.z(),
+                explosionPowerAir);
         if (level instanceof ServerLevel server) {
             if (blockHitResult.getType() != HitResult.Type.BLOCK) {
                 Vec3 fireballInAirPosition = player.position().add(addedXDir, addedYDir, addedZDir)
                         .add(playerLookDir.scale(scale));
                 //Sets the fireball's position
-                fireballAir.moveTo(fireballInAirPosition, 0, 0);
+                fireballAir.moveTo(fireballInAirPosition);
             } else {
                 //Does not work if it's at the very corner of a block, but it's more than good enough
                 Vec3 fireballInAirPosition = blockHitResult.getLocation();
                 //Sets the fireball's position
-                fireballAir.moveTo(fireballInAirPosition, 0, 0);
+                fireballAir.moveTo(fireballInAirPosition);
             }
             //Set's the fireball's velocity
             fireballAir.setDeltaMovement(playerLookDir.scale(velocity));
