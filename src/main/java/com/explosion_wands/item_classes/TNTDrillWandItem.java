@@ -7,10 +7,7 @@ import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
 public class TNTDrillWandItem extends Item {
