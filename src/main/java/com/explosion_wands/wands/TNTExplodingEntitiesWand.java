@@ -6,12 +6,13 @@ import com.explosion_wands.sharedValues.ExplosionEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -20,8 +21,9 @@ import net.minecraft.world.phys.Vec3;
 
 public class TNTExplodingEntitiesWand {
 
-    public static InteractionResult use(Level level, Player player) {
-        if (level instanceof ServerLevel serverLevel && player != null && !level.isClientSide()) {
+    public static InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack itemStack = player.getItemInHand(hand);
+        if (level instanceof ServerLevel serverLevel && !level.isClientSide()) {
             int maxEntities = ExplosionEntities.maxEntities;
             int fuse = ExplosionEntities.fuse;
             int spawnedEntities = ExplosionEntities.spawnedEntities;
@@ -54,7 +56,7 @@ public class TNTExplodingEntitiesWand {
             Vec3 playerEyeStart = player.getEyePosition();
             Vec3 playerLookAngle = player.getLookAngle();
             Vec3 playerEyeEnd = playerEyeStart.add(playerLookAngle.scale(reachBlock));
-            CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level, EntitySpawnReason.TRIGGERED);
+            CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level);
             assert customTnt != null;
             EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(
                     level,
@@ -63,9 +65,9 @@ public class TNTExplodingEntitiesWand {
                     playerEyeEnd,
                     player.getBoundingBox().expandTowards(playerLookAngle.scale(reachEntities)).inflate(inflate),
                     entity -> entity instanceof Entity
-                    && entity.isAlive()
-                    && !entity.isRemoved()
-                    && entity != player,
+                            && entity.isAlive()
+                            && !entity.isRemoved()
+                            && entity != player,
                     0);
             BlockHitResult blockHitResult = level.clip(new ClipContext(
                     playerEyeStart,
@@ -79,7 +81,7 @@ public class TNTExplodingEntitiesWand {
             String entityType = "";
 
             BlockPos target = blockHitResult.getBlockPos();
-            if(entityHitResult != null) {
+            if (entityHitResult != null) {
                 target = entityHitResult.getEntity().blockPosition();
             }
             //Failsafe in-case we spawn more entities than is intended
@@ -118,8 +120,8 @@ public class TNTExplodingEntitiesWand {
                             entityToSpawn = EntityType.SNOW_GOLEM;
                             entityType = entityToSpawn.toString();
                         }
-                        Entity entity = entityToSpawn.create(level, EntitySpawnReason.TRIGGERED);
-                        customTnt = ModEntities.CUSTOM_TNT.create(level, EntitySpawnReason.TRIGGERED);
+                        Entity entity = entityToSpawn.create(level);
+                        customTnt = ModEntities.CUSTOM_TNT.create(level);
                         //This does not make a perfect circle, but it should not be noticeable
                         if (increment <= randomExplosion && customTnt != null) {
                             customTnt.setPos(target.getX(),
@@ -165,9 +167,7 @@ public class TNTExplodingEntitiesWand {
                 //Plays a sound when a block is clicked
 
             }
-            return InteractionResult.SUCCESS;
-        } else {
-            return InteractionResult.CONSUME;
         }
+        return InteractionResultHolder.success(itemStack);
     }
 }

@@ -161,7 +161,7 @@ public class CustomTnt extends PrimedTnt {
         final double[] changeZ = {getZChange()};
         if(entityToSpawn != null && level() instanceof ServerLevel server && entitySpawnAfterExplosion) {
             for (int i = 0; i < entityAmount; i++) {
-                Entity entity = entityToSpawn.create(server, EntitySpawnReason.TRIGGERED);
+                Entity entity = entityToSpawn.create(server);
                 int finalI = i;
                 queue.add(() -> {
                     if(entity != null) {
@@ -212,7 +212,7 @@ public class CustomTnt extends PrimedTnt {
                     for (Entity e : spawnedEntities) {
                         if(e.isAlive()) {
                             //Currently kills all entities instantly
-                            e.kill(server);
+                            e.kill();
                             if((spawnedEntitiesNumber % 4) == 1) {
                                 server.sendParticles(ParticleTypes.FLAME, e.getX(), e.getY(), e.getZ(), 100, 3, 3, 3, 0.4);
                             }

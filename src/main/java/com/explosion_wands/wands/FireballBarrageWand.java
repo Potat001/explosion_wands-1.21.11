@@ -4,11 +4,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -23,7 +25,9 @@ public class FireballBarrageWand {
     public static void add(Runnable task) {
         QUEUE.add(task);
     }
-    public static InteractionResult use(Level level, Player player) {
+
+    public static InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack itemStack = player.getItemInHand(hand);
         float volume = 0.4F;
         float pitch = 1.0F;
         int reachEntities = 128;
@@ -40,7 +44,7 @@ public class FireballBarrageWand {
         double yDir = -2;
         double zDir = 0;
         int degrees = 90;
-        if(player != null && level instanceof ServerLevel serverLevel) {
+        if(level instanceof ServerLevel serverLevel) {
             Vec3 dir = new Vec3(xDir, yDir, zDir);
             double angle = Math.toRadians(player.getYRot() + degrees);
             //Makes the fireballs equally spread out
@@ -101,8 +105,7 @@ public class FireballBarrageWand {
                         SoundSource.PLAYERS,
                         volume,
                         pitch);
-            return InteractionResult.SUCCESS;
         }
-        return InteractionResult.FAIL;
+        return InteractionResultHolder.success(itemStack);
     }
 }

@@ -4,9 +4,6 @@ import com.explosion_wands.customFunctions.CustomTnt;
 import com.explosion_wands.entity.ModEntities;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -19,15 +16,6 @@ import net.minecraft.world.phys.Vec3;
 public class TNTDrillWand extends Item {
     public TNTDrillWand(Properties properties) {
         super(properties);
-    }
-
-    public static InteractionResult use(Item item, Level level, Player player, InteractionHand hand) {
-        BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
-        if (hitResult.getType() != HitResult.Type.BLOCK && !level.isClientSide()) {
-            return InteractionResult.SUCCESS;
-        } else {
-            return InteractionResult.CONSUME;
-        }
     }
 
     public static PrimedTnt asPrimedTnt(Level level, Player player) {
@@ -48,7 +36,7 @@ public class TNTDrillWand extends Item {
         int fuse = 500;
         Vec3 playerLookDir = player.getLookAngle();
         playerLookDir.add(dirX, dirY, dirZ).normalize();
-        CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level, EntitySpawnReason.TRIGGERED);
+        CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level);
         if(customTnt != null) {
             if (blockHitResult.getType() == HitResult.Type.BLOCK) {
                 Vec3 customTntInAirPosition = player.position().add(addedXDir, addedYDir, addedZDir)

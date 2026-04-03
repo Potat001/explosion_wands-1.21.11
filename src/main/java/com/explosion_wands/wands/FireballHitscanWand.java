@@ -6,8 +6,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -21,19 +19,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 public class FireballHitscanWand extends Item {
     public FireballHitscanWand(Properties properties) {
         super(properties);
-    }
-
-    public static InteractionResult use(Item item, Level level, Player player, InteractionHand hand) {
-        BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
-        if (hitResult.getType() != HitResult.Type.BLOCK && !level.isClientSide()) {
-            return InteractionResult.SUCCESS;
-        } else {
-            return InteractionResult.CONSUME;
-        }
     }
 
     public static Projectile asFireballProjectile(Level level, Player player) {
@@ -56,9 +46,9 @@ public class FireballHitscanWand extends Item {
         //Think it's fair and more fun to make the explosion power much higher when clicking on entities
         float explosionPowerEntity = 50F;
         float explosionPowerOther = 30F;
-        int particleColor1 = 16711680;
-        int particleColor2 = 500000;
-        int particleColor3 = 3000;
+        Vector3f particleColor1 = new Vector3f(16711680, 16711680, 16711680);
+        Vector3f particleColor2 = new Vector3f(500000, 500000, 500000);
+        Vector3f particleColor3 = new Vector3f(3000, 3000, 3000);
         int particleScale = 5;
         int particleThickness = 100;
         int particleSpeed = 2;
@@ -133,7 +123,7 @@ public class FireballHitscanWand extends Item {
                             serverLevel.sendParticles(new DustParticleOptions(particleColor2, particleScale), targetEntity.getX(), targetEntity.getY(), targetEntity.getZ(), particleThickness, randomDistr2, randomDistr2, randomDistr2, particleSpeed);
                             serverLevel.sendParticles(new DustParticleOptions(particleColor3, particleScale), targetEntity.getX(), targetEntity.getY(), targetEntity.getZ(), particleThickness, randomDistr3, randomDistr3, randomDistr3, particleSpeed);
                             //Guarantees that we kill the entity that we clicked on
-                            entityHitResult.getEntity().kill(serverLevel);
+                            entityHitResult.getEntity().kill();
                         }
                         //Fireball is fake now, discards it when spawned so it doesn't appear after exploding
                         //This also causes the player to not get the return to sender achievement as a side effect

@@ -6,12 +6,13 @@ import com.explosion_wands.sharedValues.ExplosionEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.entity.projectile.LargeFireball;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -20,8 +21,9 @@ import net.minecraft.world.phys.Vec3;
 
 public class FireballScatterWand {
 
-    public static InteractionResult use(Level level, Player player)  {
-        if (level instanceof ServerLevel serverLevel && player != null && !level.isClientSide()) {
+    public static InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack itemStack = player.getItemInHand(hand);
+        if (level instanceof ServerLevel serverLevel && !level.isClientSide()) {
             int maxEntities = ExplosionEntities.maxEntities;
             int fuse = ExplosionEntities.fuse;
             int spawnedEntities = ExplosionEntities.spawnedEntities;
@@ -69,20 +71,20 @@ public class FireballScatterWand {
                     player.getBoundingBox().expandTowards(playerLookAngle.scale(reachEntities)).inflate(inflate),
                     //Makes it so that we can hit any type of entity
                     entity -> entity instanceof Entity
-                    //Ensures that we can't hit the hitbox of dead entities
-                    && entity.isAlive()
-                    && !entity.isRemoved()
-                    && entity != player);
+                            //Ensures that we can't hit the hitbox of dead entities
+                            && entity.isAlive()
+                            && !entity.isRemoved()
+                            && entity != player);
             BlockPos target = blockHitResult.getBlockPos();
-            if(entityHitResult != null) {
+            if (entityHitResult != null) {
                 target = entityHitResult.getEntity().blockPosition();
             }
             //Failsafe in-case we spawn more entities than is intended
-            if(spawnedEntities <= maxEntities) {
+            if (spawnedEntities <= maxEntities) {
                 for (double theta = ExplosionEntities.theta; theta <= lessThanTheta; theta += incrementTheta) {
                     for (double phi = ExplosionEntities.phi; phi <= lessThanPhi; phi += incrementPhi) {
                         fireball = new LargeFireball(level, player, playerLookAngle, fireballExplosionPower);
-                        CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level, EntitySpawnReason.TRIGGERED);
+                        CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level);
                         //This does not make a perfect circle, but it should not be noticeable
                         if (increment <= randomExplosion && customTnt != null) {
                             customTnt.setPos(target.getX(),
@@ -95,7 +97,7 @@ public class FireballScatterWand {
                         }
                         //Creates fireball every iteration
                         //X dir: cos, Z dir: sin, makes a circle
-                        if(x != 0 && y != 0 && z != 0) {
+                        if (x != 0 && y != 0 && z != 0) {
                             fireball.setPos(target.getX() + x,
                                     target.getY() - y + spawnHeight,
                                     target.getZ() - z
@@ -114,9 +116,7 @@ public class FireballScatterWand {
                     }
                 }
             }
-            return InteractionResult.SUCCESS;
-        } else {
-            return InteractionResult.CONSUME;
         }
+        return InteractionResultHolder.success(itemStack);
     }
 }

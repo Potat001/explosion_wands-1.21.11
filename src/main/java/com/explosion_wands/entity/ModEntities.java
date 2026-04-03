@@ -23,7 +23,7 @@ public class ModEntities {
                                     .Builder
                                     .of(CustomTnt::new, MobCategory.MISC)
                                     .sized(sizedF, sizedG)
-                                    .build(CUSTOM_TNT_KEY));
+                                    .build());
 
     //HELPER METHODS
     private static ResourceKey<EntityType<?>> key(String name) {

@@ -6,12 +6,13 @@ import com.explosion_wands.sharedValues.ExplosionEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -21,8 +22,9 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class TNTExplodingBlocksWand {
-    public static InteractionResult use(Level level, Player player)  {
-        if (level instanceof ServerLevel serverLevel && player != null) {
+    public static InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack itemStack = player.getItemInHand(hand);
+        if (level instanceof ServerLevel serverLevel) {
             int maxEntities = ExplosionEntities.maxEntities;
             int fuse = ExplosionEntities.fuse;
             int spawnedEntities = ExplosionEntities.spawnedEntities;
@@ -57,7 +59,7 @@ public class TNTExplodingBlocksWand {
             Vec3 playerEyeStart = player.getEyePosition();
             Vec3 playerLookAngle = player.getLookAngle();
             Vec3 playerEyeEnd = playerEyeStart.add(playerLookAngle.scale(reachBlock));
-            CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level, EntitySpawnReason.TRIGGERED);
+            CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level);
             assert customTnt != null;
             EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(
                     level,
@@ -66,9 +68,9 @@ public class TNTExplodingBlocksWand {
                     playerEyeEnd,
                     player.getBoundingBox().expandTowards(playerLookAngle.scale(reachEntities)).inflate(inflate),
                     entity -> entity instanceof Entity
-                    && entity.isAlive()
-                    && !entity.isRemoved()
-                    && entity != player,
+                            && entity.isAlive()
+                            && !entity.isRemoved()
+                            && entity != player,
                     0);
             BlockHitResult blockHitResult = level.clip(new ClipContext(
                     playerEyeStart,
@@ -84,49 +86,49 @@ public class TNTExplodingBlocksWand {
              * the TNTs spawn
              */
             BlockPos target = blockHitResult.getBlockPos().offset(0, spawnHeight, 0);
-            if(entityHitResult != null) {
+            if (entityHitResult != null) {
                 target = entityHitResult.getEntity().blockPosition().offset(0, spawnHeight, 0);
             }
             BlockState blockToSpawn = Blocks.DIAMOND_BLOCK.defaultBlockState();
             //Purely for debugging purposes
             String blockType = "";
             //Failsafe in-case we spawn more entities than is intended
-            if(spawnedEntities <= maxEntities) {
+            if (spawnedEntities <= maxEntities) {
                 for (double theta = ExplosionEntities.theta; theta <= lessThanTheta; theta += incrementTheta) {
                     for (double phi = ExplosionEntities.phi; phi <= lessThanPhi; phi += incrementPhi) {
-                        if(randomEntity <= spawnedEntities / 8 && spawnedEntities >= 0) {
+                        if (randomEntity <= spawnedEntities / 8 && spawnedEntities >= 0) {
                             blockToSpawn = Blocks.DIAMOND_BLOCK.defaultBlockState();
                             blockType = blockToSpawn.toString();
                         }
-                        if(randomEntity <= (spawnedEntities / 4) && randomEntity > (spawnedEntities / 8)) {
+                        if (randomEntity <= (spawnedEntities / 4) && randomEntity > (spawnedEntities / 8)) {
                             blockToSpawn = Blocks.CAKE.defaultBlockState();
                             blockType = blockToSpawn.toString();
                         }
-                        if(randomEntity <= (spawnedEntities / 8) * 2 + (spawnedEntities / 8) && randomEntity > (spawnedEntities / 4)) {
+                        if (randomEntity <= (spawnedEntities / 8) * 2 + (spawnedEntities / 8) && randomEntity > (spawnedEntities / 4)) {
                             blockToSpawn = Blocks.AMETHYST_BLOCK.defaultBlockState();
                             blockType = blockToSpawn.toString();
                         }
-                        if(randomEntity <= spawnedEntities / 2 && randomEntity > (spawnedEntities / 8) * 2 + (spawnedEntities / 8)) {
+                        if (randomEntity <= spawnedEntities / 2 && randomEntity > (spawnedEntities / 8) * 2 + (spawnedEntities / 8)) {
                             blockToSpawn = Blocks.LANTERN.defaultBlockState();
                             blockType = blockToSpawn.toString();
                         }
-                        if(randomEntity <= (spawnedEntities / 2) + (spawnedEntities / 8) && randomEntity > (spawnedEntities / 2)) {
+                        if (randomEntity <= (spawnedEntities / 2) + (spawnedEntities / 8) && randomEntity > (spawnedEntities / 2)) {
                             blockToSpawn = Blocks.BEACON.defaultBlockState();
                             blockType = blockToSpawn.toString();
                         }
-                        if(randomEntity <= (spawnedEntities / 2) + (spawnedEntities / 4) && randomEntity > (spawnedEntities / 2) + (spawnedEntities / 8)) {
+                        if (randomEntity <= (spawnedEntities / 2) + (spawnedEntities / 4) && randomEntity > (spawnedEntities / 2) + (spawnedEntities / 8)) {
                             blockToSpawn = Blocks.GOLD_BLOCK.defaultBlockState();
                             blockType = blockToSpawn.toString();
                         }
-                        if(randomEntity <= spawnedEntities - (spawnedEntities / 8) && randomEntity > (spawnedEntities / 2) + (spawnedEntities / 4)) {
+                        if (randomEntity <= spawnedEntities - (spawnedEntities / 8) && randomEntity > (spawnedEntities / 2) + (spawnedEntities / 4)) {
                             blockToSpawn = Blocks.JACK_O_LANTERN.defaultBlockState();
                             blockType = blockToSpawn.toString();
                         }
-                        if(randomEntity <= spawnedEntities && randomEntity > spawnedEntities - (spawnedEntities / 8)) {
+                        if (randomEntity <= spawnedEntities && randomEntity > spawnedEntities - (spawnedEntities / 8)) {
                             blockToSpawn = Blocks.GLOWSTONE.defaultBlockState();
                             blockType = blockToSpawn.toString();
                         }
-                        customTnt = ModEntities.CUSTOM_TNT.create(level, EntitySpawnReason.TRIGGERED);
+                        customTnt = ModEntities.CUSTOM_TNT.create(level);
                         //Adds the entity to the world
                         FallingBlockEntity fallingBlockEntity = FallingBlockEntity.fall(
                                 level,
@@ -145,7 +147,7 @@ public class TNTExplodingBlocksWand {
                             customTnt.setFuse(fuse);
                             customTnt.setExplosionPower(randomIncrement);
                         }
-                        if(x != 0 && y != 0 && z != 0) {
+                        if (x != 0 && y != 0 && z != 0) {
                             fallingBlockEntity.setPos(target.getX() + x,
                                     target.getY() + y,
                                     target.getZ() + z
@@ -175,9 +177,7 @@ public class TNTExplodingBlocksWand {
                             + ",   entity type: " + blockType
             );
              */
-            return InteractionResult.SUCCESS;
-        } else {
-            return InteractionResult.CONSUME;
         }
+        return InteractionResultHolder.success(itemStack);
     }
 }

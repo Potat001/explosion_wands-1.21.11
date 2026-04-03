@@ -10,11 +10,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -31,8 +32,9 @@ public class TNTSlowBarrageWand {
 		QUEUE.add(task);
 	}
 
-	public static InteractionResult use(Level level, Player player)  {
-		if (level instanceof ServerLevel serverLevel && player != null && !level.isClientSide()) {
+	public static InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)  {
+		ItemStack itemStack = player.getItemInHand(hand);
+		if (level instanceof ServerLevel serverLevel && !level.isClientSide()) {
 			TickQueue queue = TickQueueManager.createQueue(tntAmount, 4);
 			float volume = 0.4F;
 			float pitch = 1.0F;
@@ -67,7 +69,7 @@ public class TNTSlowBarrageWand {
 			Vec3 playerEyeEnd = playerEyeStart.add(playerLookAngle.scale(reachBlocks));
 			//Makes a duplicate, unused CustomTnt so we're able to get entityHitResult working without
 			//potentially having to rewrite much of the code
-			CustomTnt customTnt1 = ModEntities.CUSTOM_TNT.create(level, EntitySpawnReason.TRIGGERED);
+			CustomTnt customTnt1 = ModEntities.CUSTOM_TNT.create(level);
             assert customTnt1 != null;
             EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(
 					level,
@@ -101,7 +103,7 @@ public class TNTSlowBarrageWand {
 					int finalI1 = i;
 					queue.add(() -> {
 						//Creates primed TNTs every iteration
-						CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level, EntitySpawnReason.TRIGGERED);
+						CustomTnt customTnt = ModEntities.CUSTOM_TNT.create(level);
 						if(customTnt != null) {
 							//X dir: cos, Z dir: sin, makes a circle
                             customTnt.setPos(target.getX() + (Math.cos(angle[defaultValues]) * amplitude),
@@ -141,9 +143,7 @@ public class TNTSlowBarrageWand {
 						}
 					});
                 }
-			return InteractionResult.SUCCESS;
-		} else {
-			return InteractionResult.CONSUME;
 		}
+		return InteractionResultHolder.success(itemStack);
 	}
 }
