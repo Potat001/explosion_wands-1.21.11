@@ -54,12 +54,12 @@ public class FireballWand extends Item {
                 Vec3 fireballInAirPosition = player.position().add(addedXDir, addedYDir, addedZDir)
                         .add(playerLookDir.scale(scale));
                 //Sets the fireball's position
-                fireballAir.moveOrInterpolateTo(fireballInAirPosition, 0, 0);
+                fireballAir.moveTo(fireballInAirPosition, 0, 0);
             } else {
                 //Does not work if it's at the very corner of a block, but it's more than good enough
                 Vec3 fireballInAirPosition = blockHitResult.getLocation();
                 //Sets the fireball's position
-                fireballAir.moveOrInterpolateTo(fireballInAirPosition, 0, 0);
+                fireballAir.moveTo(fireballInAirPosition, 0, 0);
             }
             //Set's the fireball's velocity
             fireballAir.setDeltaMovement(playerLookDir.scale(velocity));

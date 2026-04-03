@@ -66,11 +66,11 @@ public class TNTTornadoWand extends Item {
             if(blockHitResult.getType() != HitResult.Type.BLOCK) {
                 Vec3 customTntInAirPosition = player.position().add(addedXDir, addedYDir, addedZDir)
                         .add(playerLookDir.scale(scale));
-                customTnt.moveOrInterpolateTo(customTntInAirPosition, 0, 0);
+                customTnt.moveTo(customTntInAirPosition, 0, 0);
             } else {
                 //Does not work if it's at the very corner of a block, but it's more than good enough
                 Vec3 customTntInAirPosition = blockHitResult.getLocation();
-                customTnt.moveOrInterpolateTo(customTntInAirPosition, 0, 0);
+                customTnt.moveTo(customTntInAirPosition, 0, 0);
             }
             customTnt.setDeltaMovement(playerLookDir.scale(velocity));
             customTnt.setTornado(tornado);
