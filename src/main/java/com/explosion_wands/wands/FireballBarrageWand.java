@@ -23,6 +23,7 @@ public class FireballBarrageWand {
     public static void add(Runnable task) {
         QUEUE.add(task);
     }
+
     public static InteractionResult use(Level level, Player player) {
         float volume = 0.4F;
         float pitch = 1.0F;
